@@ -1135,6 +1135,7 @@ on_user_removed_in_accounts_service (GDBusProxy *proxy,
 {
         ActUserManager *manager = ACT_USER_MANAGER (user_data);
         ActUser        *user;
+        GSList         *node;
 
         user = g_hash_table_lookup (manager->priv->users_by_object_path, object_path);
 
@@ -1145,7 +1146,12 @@ on_user_removed_in_accounts_service (GDBusProxy *proxy,
                 g_debug ("ActUserManager: tracked user %s removed from accounts service", object_path);
         }
 
-        manager->priv->new_users = g_slist_remove (manager->priv->new_users, user);
+        node = g_slist_find (manager->priv->new_users, user);
+        if (node != NULL) {
+                g_signal_handlers_disconnect_by_func (user, on_new_user_loaded, manager);
+                g_object_unref (user);
+                manager->priv->new_users = g_slist_delete_link (manager->priv->new_users, node);
+        }
 
         remove_user (manager, user);
 }
