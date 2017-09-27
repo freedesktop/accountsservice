@@ -1115,6 +1115,7 @@ on_new_user_in_accounts_service (GDBusProxy *proxy,
                                  gpointer    user_data)
 {
         ActUserManager *manager = ACT_USER_MANAGER (user_data);
+        ActUser *user;
 
         if (!manager->priv->is_loaded) {
                 g_debug ("ActUserManager: ignoring new user in accounts service with object path %s since not loaded yet", object_path);
@@ -1122,7 +1123,9 @@ on_new_user_in_accounts_service (GDBusProxy *proxy,
         }
 
         g_debug ("ActUserManager: new user in accounts service with object path %s", object_path);
-        add_new_user_for_object_path (object_path, manager);
+        user = add_new_user_for_object_path (object_path, manager);
+
+        g_object_unref (user);
 }
 
 static void
