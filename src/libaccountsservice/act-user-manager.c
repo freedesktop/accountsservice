@@ -843,11 +843,11 @@ create_new_user (ActUserManager *manager)
 
         user = g_object_new (ACT_TYPE_USER, NULL);
 
-        manager->priv->new_users = g_slist_prepend (manager->priv->new_users, user);
+        manager->priv->new_users = g_slist_prepend (manager->priv->new_users, g_object_ref (user));
 
         g_signal_connect_object (user, "notify::is-loaded", G_CALLBACK (on_new_user_loaded), manager, 0);
 
-        return g_object_ref (user);
+        return user;
 }
 
 static void
