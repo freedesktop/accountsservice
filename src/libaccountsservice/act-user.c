@@ -140,6 +140,8 @@ struct _ActUser {
         guint           system_account : 1;
         guint           local_account : 1;
         guint           nonexistent : 1;
+
+        guint           update_info_timeout_id;
 };
 
 struct _ActUserClass
@@ -598,6 +600,10 @@ act_user_finalize (GObject *object)
 
         if (user->connection != NULL) {
                 g_object_unref (user->connection);
+        }
+
+        if (user->update_info_timeout_id != 0) {
+                g_source_remove (user->update_info_timeout_id);
         }
 
         if (G_OBJECT_CLASS (act_user_parent_class)->finalize)
@@ -1366,13 +1372,25 @@ update_info (ActUser *user)
                            user);
 }
 
+static gboolean
+on_timeout_update_info (ActUser *user)
+{
+        update_info (user);
+        user->update_info_timeout_id = 0;
+
+        return G_SOURCE_REMOVE;
+}
+
 static void
 changed_handler (AccountsUser *object,
                  gpointer   *data)
 {
         ActUser *user = ACT_USER (data);
 
-        update_info (user);
+        if (user->update_info_timeout_id != 0)
+                return;
+
+        user->update_info_timeout_id = g_timeout_add (250, (GSourceFunc) on_timeout_update_info, user);
 }
 
 /**
