@@ -62,6 +62,7 @@ struct DaemonPrivate {
         GDBusConnection *bus_connection;
 
         GHashTable *users;
+        gsize number_of_normal_users;
         GList *explicitly_requested_users;
 
         User *autologin;
@@ -422,10 +423,13 @@ create_users_hash_table (void)
 static void
 reload_users (Daemon *daemon)
 {
+        AccountsAccounts *accounts = ACCOUNTS_ACCOUNTS (daemon);
+        gboolean had_no_users, has_no_users, had_multiple_users, has_multiple_users;
         GHashTable *users;
         GHashTable *old_users;
         GHashTable *local;
         GHashTableIter iter;
+        gsize number_of_normal_users = 0;
         gpointer name;
         User *user;
 
@@ -453,12 +457,26 @@ reload_users (Daemon *daemon)
 
         wtmp_helper_update_login_frequencies (users);
 
-        /* Mark which users are local, which are not */
+        /* Count the non-system users. Mark which users are local, which are not. */
         g_hash_table_iter_init (&iter, users);
-        while (g_hash_table_iter_next (&iter, &name, (gpointer *)&user))
+        while (g_hash_table_iter_next (&iter, &name, (gpointer *)&user)) {
+                if (!user_get_system_account (user))
+                        number_of_normal_users++;
                 user_update_local_account_property (user, g_hash_table_lookup (local, name) != NULL);
-
+        }
         g_hash_table_destroy (local);
+
+        had_no_users = accounts_accounts_get_has_no_users (accounts);
+        has_no_users = number_of_normal_users == 0;
+
+        if (had_no_users != has_no_users)
+                accounts_accounts_set_has_no_users (accounts, has_no_users);
+
+        had_multiple_users = accounts_accounts_get_has_multiple_users (accounts);
+        has_multiple_users = number_of_normal_users > 1;
+
+        if (had_multiple_users != has_multiple_users)
+                accounts_accounts_set_has_multiple_users (accounts, has_multiple_users);
 
         /* Swap out the users */
         old_users = daemon->priv->users;

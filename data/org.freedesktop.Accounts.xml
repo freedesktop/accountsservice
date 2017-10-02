@@ -224,5 +224,25 @@
      </doc:doc>
    </property>
 
+   <property name="HasNoUsers" type="b" access="read">
+     <doc:doc>
+       <doc:description>
+         <doc:para>
+           Whether or not the system has no users
+         </doc:para>
+       </doc:description>
+     </doc:doc>
+   </property>
+
+   <property name="HasMultipleUsers" type="b" access="read">
+     <doc:doc>
+       <doc:description>
+         <doc:para>
+           Whether or not the system has multiple users
+         </doc:para>
+       </doc:description>
+     </doc:doc>
+   </property>
+
   </interface>
 </node>
