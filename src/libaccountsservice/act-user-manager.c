@@ -883,10 +883,6 @@ add_user (ActUserManager *manager,
                                  G_CALLBACK (on_user_changed),
                                  manager, 0);
 
-        if (g_hash_table_size (manager->priv->normal_users_by_name) > 1) {
-                set_has_multiple_users (manager, TRUE);
-        }
-
         if (manager->priv->is_loaded) {
                 g_debug ("ActUserManager: loaded, so emitting user-added signal");
                 g_signal_emit (manager, signals[USER_ADDED], 0, user);
@@ -914,10 +910,6 @@ remove_user (ActUserManager *manager,
                 g_hash_table_remove (manager->priv->normal_users_by_name, act_user_get_user_name (user));
                 g_hash_table_remove (manager->priv->system_users_by_name, act_user_get_user_name (user));
 
-        }
-
-        if (g_hash_table_size (manager->priv->normal_users_by_name) <= 1) {
-                set_has_multiple_users (manager, FALSE);
         }
 
         if (manager->priv->is_loaded) {
@@ -951,10 +943,6 @@ update_user (ActUserManager *manager,
                                              g_object_ref (user));
                         g_hash_table_remove (manager->priv->system_users_by_name, username);
                         g_signal_emit (manager, signals[USER_ADDED], 0, user);
-
-                        if (g_hash_table_size (manager->priv->normal_users_by_name) > 1) {
-                                set_has_multiple_users (manager, TRUE);
-                        }
                 }
         } else {
                 if (act_user_is_system_account (user)) {
@@ -965,10 +953,6 @@ update_user (ActUserManager *manager,
                                              g_object_ref (user));
                         g_hash_table_remove (manager->priv->normal_users_by_name, username);
                         g_signal_emit (manager, signals[USER_REMOVED], 0, user);
-
-                        if (g_hash_table_size (manager->priv->normal_users_by_name) <= 1) {
-                                set_has_multiple_users (manager, FALSE);
-                        }
                 }
         }
 }
@@ -2709,6 +2693,9 @@ act_user_manager_set_property (GObject        *object,
         case PROP_EXCLUDE_USERNAMES_LIST:
                 set_exclude_usernames (self, g_value_get_pointer (value));
                 break;
+        case PROP_HAS_MULTIPLE_USERS:
+                set_has_multiple_users (self, g_value_get_boolean (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -2737,7 +2724,7 @@ act_user_manager_class_init (ActUserManagerClass *klass)
                                                                "Has multiple users",
                                                                "Whether more than one normal user is present",
                                                                FALSE,
-                                                               G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
         g_object_class_install_property (object_class,
                                          PROP_INCLUDE_USERNAMES_LIST,
                                          g_param_spec_pointer ("include-usernames-list",
@@ -2891,6 +2878,12 @@ act_user_manager_init (ActUserManager *manager)
                 return;
         }
         g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (manager->priv->accounts_proxy), G_MAXINT);
+
+        g_object_bind_property (G_OBJECT (manager->priv->accounts_proxy),
+                                "has-multiple-users",
+                                G_OBJECT (manager),
+                                "has-multiple-users",
+                                G_BINDING_SYNC_CREATE);
 
         g_signal_connect (manager->priv->accounts_proxy,
                           "user-added",
