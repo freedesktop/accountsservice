@@ -2571,6 +2571,10 @@ load_users (ActUserManager *manager)
         g_assert (manager->priv->accounts_proxy != NULL);
         g_debug ("ActUserManager: calling 'ListCachedUsers'");
 
+        if (!ensure_accounts_proxy (manager)) {
+                return;
+        }
+
         accounts_accounts_call_list_cached_users (manager->priv->accounts_proxy,
                                                   NULL,
                                                   on_list_cached_users_finished,
