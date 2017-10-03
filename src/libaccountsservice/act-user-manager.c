@@ -224,6 +224,7 @@ static void     act_user_manager_class_init (ActUserManagerClass *klass);
 static void     act_user_manager_init       (ActUserManager      *user_manager);
 static void     act_user_manager_finalize   (GObject             *object);
 
+static gboolean ensure_accounts_proxy       (ActUserManager *manager);
 static gboolean load_seat_incrementally     (ActUserManager *manager);
 static void     unload_seat                 (ActUserManager *manager);
 static void     load_users                  (ActUserManager *manager);
@@ -2832,6 +2833,47 @@ act_user_manager_queue_load (ActUserManager *manager)
         }
 }
 
+static gboolean
+ensure_accounts_proxy (ActUserManager *manager)
+{
+        GError *error = NULL;
+
+        if (manager->priv->accounts_proxy != NULL) {
+                return TRUE;
+        }
+
+        manager->priv->accounts_proxy = accounts_accounts_proxy_new_sync (manager->priv->connection,
+                                                                          G_DBUS_PROXY_FLAGS_NONE,
+                                                                          ACCOUNTS_NAME,
+                                                                          ACCOUNTS_PATH,
+                                                                          NULL,
+                                                                          &error);
+        if (error != NULL) {
+                g_debug ("ActUserManager: getting account proxy failed: %s", error->message);
+                g_clear_error (&error);
+                return FALSE;
+        }
+
+        g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (manager->priv->accounts_proxy), G_MAXINT);
+
+        g_object_bind_property (G_OBJECT (manager->priv->accounts_proxy),
+                                "has-multiple-users",
+                                G_OBJECT (manager),
+                                "has-multiple-users",
+                                G_BINDING_SYNC_CREATE);
+
+        g_signal_connect (manager->priv->accounts_proxy,
+                          "user-added",
+                          G_CALLBACK (on_new_user_in_accounts_service),
+                          manager);
+        g_signal_connect (manager->priv->accounts_proxy,
+                          "user-deleted",
+                          G_CALLBACK (on_user_removed_in_accounts_service),
+                          manager);
+
+        return TRUE;
+}
+
 static void
 act_user_manager_init (ActUserManager *manager)
 {
@@ -2873,37 +2915,7 @@ act_user_manager_init (ActUserManager *manager)
                 return;
         }
 
-        manager->priv->accounts_proxy = accounts_accounts_proxy_new_sync (manager->priv->connection,
-                                                                          G_DBUS_PROXY_FLAGS_NONE,
-                                                                          ACCOUNTS_NAME,
-                                                                          ACCOUNTS_PATH,
-                                                                          NULL,
-                                                                          &error);
-        if (manager->priv->accounts_proxy == NULL) {
-                if (error != NULL) {
-                        g_warning ("Failed to create accounts proxy: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to create_accounts_proxy");
-                }
-                return;
-        }
-        g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (manager->priv->accounts_proxy), G_MAXINT);
-
-        g_object_bind_property (G_OBJECT (manager->priv->accounts_proxy),
-                                "has-multiple-users",
-                                G_OBJECT (manager),
-                                "has-multiple-users",
-                                G_BINDING_SYNC_CREATE);
-
-        g_signal_connect (manager->priv->accounts_proxy,
-                          "user-added",
-                          G_CALLBACK (on_new_user_in_accounts_service),
-                          manager);
-        g_signal_connect (manager->priv->accounts_proxy,
-                          "user-deleted",
-                          G_CALLBACK (on_user_removed_in_accounts_service),
-                          manager);
+        ensure_accounts_proxy (manager);
 
         manager->priv->seat.state = ACT_USER_MANAGER_SEAT_STATE_UNLOADED;
 }
