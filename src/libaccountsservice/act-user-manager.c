@@ -1500,34 +1500,15 @@ set_is_loaded (ActUserManager *manager,
 }
 
 static void
-on_list_cached_users_finished (GObject      *object,
-                               GAsyncResult *result,
-                               gpointer      data)
+load_user_paths (ActUserManager       *manager,
+                 const char * const * user_paths)
 {
-        AccountsAccounts *proxy = ACCOUNTS_ACCOUNTS (object);
-        ActUserManager   *manager = data;
-        gchar           **user_paths;
-        GError           *error = NULL;
-
-        manager->priv->listing_cached_users = FALSE;
-        if (!accounts_accounts_call_list_cached_users_finish (proxy, &user_paths, result, &error)) {
-                g_debug ("ActUserManager: ListCachedUsers failed: %s", error->message);
-                g_error_free (error);
-
-                g_object_unref (manager->priv->accounts_proxy);
-                manager->priv->accounts_proxy = NULL;
-
-                g_debug ("ActUserManager: unrefing manager owned by failed ListCachedUsers call");
-                g_object_unref (manager);
-                return;
-        }
-
         /* We now have a batch of unloaded users that we know about. Once that initial
          * batch is loaded up, we can mark the manager as loaded.
          *
          * (see on_new_user_loaded)
          */
-        if (g_strv_length (user_paths) > 0) {
+        if (g_strv_length ((char **) user_paths) > 0) {
                 int i;
 
                 g_debug ("ActUserManager: ListCachedUsers finished, will set loaded property after list is fully loaded");
@@ -1543,27 +1524,57 @@ on_list_cached_users_finished (GObject      *object,
                 g_debug ("ActUserManager: ListCachedUsers finished with empty list, maybe setting loaded property now");
                 maybe_set_is_loaded (manager);
         }
+}
 
-        g_strfreev (user_paths);
+static void
+load_included_usernames (ActUserManager *manager)
+{
+        GSList *l;
 
         /* Add users who are specifically included */
-        if (manager->priv->include_usernames != NULL) {
-                GSList *l;
+        for (l = manager->priv->include_usernames; l != NULL; l = l->next) {
+                ActUser *user;
 
-                for (l = manager->priv->include_usernames; l != NULL; l = l->next) {
-                        ActUser *user;
-
-                        g_debug ("ActUserManager: Adding included user %s", (char *)l->data);
-                        /*
-                         * The call to act_user_manager_get_user will add the user if it is
-                         * valid and not already in the hash.
-                         */
-                        user = act_user_manager_get_user (manager, l->data);
-                        if (user == NULL) {
-                                g_debug ("ActUserManager: unable to lookup user '%s'", (char *)l->data);
-                        }
+                g_debug ("ActUserManager: Adding included user %s", (char *)l->data);
+                /*
+                 * The call to act_user_manager_get_user will add the user if it is
+                 * valid and not already in the hash.
+                 */
+                user = act_user_manager_get_user (manager, l->data);
+                if (user == NULL) {
+                        g_debug ("ActUserManager: unable to lookup user '%s'", (char *)l->data);
                 }
         }
+}
+
+static void
+on_list_cached_users_finished (GObject      *object,
+                               GAsyncResult *result,
+                               gpointer      data)
+{
+        AccountsAccounts *proxy = ACCOUNTS_ACCOUNTS (object);
+        ActUserManager   *manager = data;
+        gchar           **user_paths;
+        GError           *error = NULL;
+
+        manager->priv->listing_cached_users = FALSE;
+
+        if (!accounts_accounts_call_list_cached_users_finish (proxy, &user_paths, result, &error)) {
+                g_debug ("ActUserManager: ListCachedUsers failed: %s", error->message);
+                g_error_free (error);
+
+                g_object_unref (manager->priv->accounts_proxy);
+                manager->priv->accounts_proxy = NULL;
+
+                g_debug ("ActUserManager: unrefing manager owned by failed ListCachedUsers call");
+                g_object_unref (manager);
+                return;
+        }
+
+        load_user_paths (manager, (const char * const *) user_paths);
+        g_strfreev (user_paths);
+
+        load_included_usernames (manager);
 
         g_debug ("ActUserManager: unrefing manager owned by finished ListCachedUsers call");
         g_object_unref (manager);
