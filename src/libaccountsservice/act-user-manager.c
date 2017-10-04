@@ -199,7 +199,6 @@ struct ActUserManagerPrivate
         gboolean               is_loaded;
         gboolean               has_multiple_users;
         gboolean               getting_sessions;
-        gboolean               listing_cached_users;
         gboolean               list_cached_users_done;
 };
 
@@ -229,8 +228,10 @@ static gboolean ensure_accounts_proxy       (ActUserManager *manager);
 static gboolean load_seat_incrementally     (ActUserManager *manager);
 static void     unload_seat                 (ActUserManager *manager);
 static void     load_users                  (ActUserManager *manager);
+static void     load_user                   (ActUserManager *manager,
+                                             const char     *username);
 static void     act_user_manager_queue_load (ActUserManager *manager);
-static void     queue_load_seat_and_users   (ActUserManager *manager);
+static void     queue_load_seat             (ActUserManager *manager);
 
 static void     load_new_session_incrementally (ActUserManagerNewSession *new_session);
 static void     set_is_loaded (ActUserManager *manager, gboolean is_loaded);
@@ -738,8 +739,6 @@ on_get_seat_id_finished (GObject        *object,
         manager->priv->seat.id = seat_id;
         manager->priv->seat.state++;
 
-        load_seat_incrementally (manager);
-
  out:
         g_debug ("ActUserManager: unrefing manager owned by GetSeatId request");
         g_object_unref (manager);
@@ -767,8 +766,6 @@ _get_systemd_seat_id (ActUserManager *manager)
         free (seat_id);
 
         manager->priv->seat.state++;
-
-        queue_load_seat_incrementally (manager);
 }
 #endif
 
@@ -1547,52 +1544,10 @@ load_included_usernames (ActUserManager *manager)
 
         /* Add users who are specifically included */
         for (l = manager->priv->include_usernames; l != NULL; l = l->next) {
-                ActUser *user;
-
                 g_debug ("ActUserManager: Adding included user %s", (char *)l->data);
-                /*
-                 * The call to act_user_manager_get_user will add the user if it is
-                 * valid and not already in the hash.
-                 */
-                user = act_user_manager_get_user (manager, l->data);
-                if (user == NULL) {
-                        g_debug ("ActUserManager: unable to lookup user '%s'", (char *)l->data);
-                }
+
+                load_user (manager, l->data);
         }
-}
-
-static void
-on_list_cached_users_finished (GObject      *object,
-                               GAsyncResult *result,
-                               gpointer      data)
-{
-        AccountsAccounts *proxy = ACCOUNTS_ACCOUNTS (object);
-        ActUserManager   *manager = data;
-        gchar           **user_paths;
-        GError           *error = NULL;
-
-        manager->priv->listing_cached_users = FALSE;
-        manager->priv->list_cached_users_done = TRUE;
-
-        if (!accounts_accounts_call_list_cached_users_finish (proxy, &user_paths, result, &error)) {
-                g_debug ("ActUserManager: ListCachedUsers failed: %s", error->message);
-                g_error_free (error);
-
-                g_object_unref (manager->priv->accounts_proxy);
-                manager->priv->accounts_proxy = NULL;
-
-                g_debug ("ActUserManager: unrefing manager owned by failed ListCachedUsers call");
-                g_object_unref (manager);
-                return;
-        }
-
-        load_user_paths (manager, (const char * const *) user_paths);
-        g_strfreev (user_paths);
-
-        load_included_usernames (manager);
-
-        g_debug ("ActUserManager: unrefing manager owned by finished ListCachedUsers call");
-        g_object_unref (manager);
 }
 
 static void
@@ -2388,6 +2343,45 @@ act_user_manager_get_user (ActUserManager *manager,
         return user;
 }
 
+static void
+load_user (ActUserManager *manager,
+           const char     *username)
+{
+        ActUser *user;
+        GError *error = NULL;
+        char *object_path = NULL;
+        gboolean user_found;
+
+        g_return_if_fail (ACT_IS_USER_MANAGER (manager));
+        g_return_if_fail (username != NULL && username[0] != '\0');
+
+        user = lookup_user_by_name (manager, username);
+
+        if (user == NULL) {
+                g_debug ("ActUserManager: trying to track new user with username %s", username);
+                user = create_new_user (manager);
+        }
+
+        user_found = accounts_accounts_call_find_user_by_name_sync (manager->priv->accounts_proxy,
+                                                                    username,
+                                                                    &object_path,
+                                                                    NULL,
+                                                                    &error);
+
+        if (!user_found) {
+                if (error != NULL) {
+                        g_debug ("ActUserManager: Failed to find user '%s': %s",
+                                 username, error->message);
+                        g_clear_error (&error);
+                } else {
+                        g_debug ("ActUserManager: Failed to find user '%s'",
+                                 username);
+                }
+        }
+
+        _act_user_update_from_object_path (user, object_path);
+}
+
 /**
  * act_user_manager_get_user_by_id:
  * @manager: the manager to query.
@@ -2452,6 +2446,13 @@ act_user_manager_list_users (ActUserManager *manager)
 
         g_return_val_if_fail (ACT_IS_USER_MANAGER (manager), NULL);
 
+        if (!manager->priv->list_cached_users_done) {
+                load_users (manager);
+
+                if (manager->priv->seat.state == ACT_USER_MANAGET_SEAT_STATE_GET_SEAT_PROXY)
+                        queue_load_seat_incrementally (manager);
+        }
+
         retval = NULL;
         g_hash_table_foreach (manager->priv->normal_users_by_name, listify_hash_values_hfunc, &retval);
 
@@ -2471,20 +2472,15 @@ maybe_set_is_loaded (ActUserManager *manager)
                 return;
         }
 
-        if (manager->priv->listing_cached_users) {
-                g_debug ("ActUserManager: Listing cached users, so not setting loaded property");
-                return;
-        }
-
         if (manager->priv->new_users_inhibiting_load != NULL) {
                 g_debug ("ActUserManager: Loading new users, so not setting loaded property");
                 return;
         }
 
-        /* Don't set is_loaded yet unless the seat is already loaded
+        /* Don't set is_loaded yet unless the seat is already loaded enough
          * or failed to load.
          */
-        if (manager->priv->seat.state == ACT_USER_MANAGER_SEAT_STATE_LOADED) {
+        if (manager->priv->seat.state >= ACT_USER_MANAGER_SEAT_STATE_GET_ID) {
                 g_debug ("ActUserManager: Seat loaded, so now setting loaded property");
         } else if (manager->priv->seat.state == ACT_USER_MANAGER_SEAT_STATE_UNLOADED) {
                 g_debug ("ActUserManager: Seat wouldn't load, so giving up on it and setting loaded property");
@@ -2582,18 +2578,32 @@ load_sessions (ActUserManager *manager)
 static void
 load_users (ActUserManager *manager)
 {
-        g_assert (manager->priv->accounts_proxy != NULL);
-        g_debug ("ActUserManager: calling 'ListCachedUsers'");
+        GError *error = NULL;
+        char **user_paths = NULL;
+        gboolean could_list = FALSE;
 
         if (!ensure_accounts_proxy (manager)) {
                 return;
         }
 
-        accounts_accounts_call_list_cached_users (manager->priv->accounts_proxy,
-                                                  NULL,
-                                                  on_list_cached_users_finished,
-                                                  g_object_ref (manager));
-        manager->priv->listing_cached_users = TRUE;
+        g_debug ("ActUserManager: calling 'ListCachedUsers'");
+
+        could_list = accounts_accounts_call_list_cached_users_sync (manager->priv->accounts_proxy,
+                                                                    &user_paths,
+                                                                    NULL, &error);
+
+        if (!could_list) {
+                g_debug ("ActUserManager: ListCachedUsers failed: %s", error->message);
+                g_clear_error (&error);
+                return;
+        }
+
+        load_user_paths (manager, (const char * const *) user_paths);
+        g_strfreev (user_paths);
+
+        load_included_usernames (manager);
+
+        manager->priv->list_cached_users_done = TRUE;
 }
 
 static gboolean
@@ -2633,11 +2643,6 @@ load_seat_incrementally (ActUserManager *manager)
 static gboolean
 load_idle (ActUserManager *manager)
 {
-        /* The order below is important: load_seat_incrementally might
-           set "is-loaded" immediately and we thus need to call
-           load_users before it.
-        */
-        load_users (manager);
         manager->priv->seat.state = ACT_USER_MANAGER_SEAT_STATE_UNLOADED + 1;
         load_seat_incrementally (manager);
         manager->priv->load_id = 0;
@@ -2646,7 +2651,7 @@ load_idle (ActUserManager *manager)
 }
 
 static void
-queue_load_seat_and_users (ActUserManager *manager)
+queue_load_seat (ActUserManager *manager)
 {
         if (manager->priv->load_id > 0) {
                 return;
@@ -2847,7 +2852,7 @@ act_user_manager_queue_load (ActUserManager *manager)
         g_return_if_fail (ACT_IS_USER_MANAGER (manager));
 
         if (! manager->priv->is_loaded) {
-                queue_load_seat_and_users (manager);
+                queue_load_seat (manager);
         }
 }
 
