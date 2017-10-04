@@ -200,6 +200,7 @@ struct ActUserManagerPrivate
         gboolean               has_multiple_users;
         gboolean               getting_sessions;
         gboolean               listing_cached_users;
+        gboolean               list_cached_users_done;
 };
 
 enum {
@@ -1102,6 +1103,12 @@ on_new_user_in_accounts_service (GDBusProxy *proxy,
         ActUserManager *manager = ACT_USER_MANAGER (user_data);
         ActUser *user;
 
+        /* Only track user changes if the user has requested a list
+         * of users */
+        if (!manager->priv->list_cached_users_done) {
+                return;
+        }
+
         if (!manager->priv->is_loaded) {
                 g_debug ("ActUserManager: ignoring new user in accounts service with object path %s since not loaded yet", object_path);
                 return;
@@ -1121,6 +1128,12 @@ on_user_removed_in_accounts_service (GDBusProxy *proxy,
         ActUserManager *manager = ACT_USER_MANAGER (user_data);
         ActUser        *user;
         GSList         *node;
+
+        /* Only track user changes if the user has requested a list
+         * of users */
+        if (!manager->priv->list_cached_users_done) {
+                return;
+        }
 
         user = g_hash_table_lookup (manager->priv->users_by_object_path, object_path);
 
@@ -1559,6 +1572,7 @@ on_list_cached_users_finished (GObject      *object,
         GError           *error = NULL;
 
         manager->priv->listing_cached_users = FALSE;
+        manager->priv->list_cached_users_done = TRUE;
 
         if (!accounts_accounts_call_list_cached_users_finish (proxy, &user_paths, result, &error)) {
                 g_debug ("ActUserManager: ListCachedUsers failed: %s", error->message);
