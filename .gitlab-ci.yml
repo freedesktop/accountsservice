@@ -2,15 +2,15 @@ build-ubuntu:
   image: ubuntu:rolling
   before_script:
     - apt-get update
-    - apt-get install -q -y --no-install-recommends gobject-introspection gtk-doc-tools intltool libglib2.0-dev libpolkit-gobject-1-dev libsystemd-dev libtool
+    - apt-get install -q -y --no-install-recommends meson ninja-build gobject-introspection gtk-doc-tools gettext libglib2.0-dev libpolkit-gobject-1-dev libsystemd-dev libdbus-1-dev
   script:
-    - ./autogen.sh --enable-gtk-doc --with-systemdsystemunitdir=/lib/systemd/system
-    - make
+    - meson -Dgtk_doc=true _build
+    - ninja -C _build all
 
 build-fedora:
   image: fedora:latest
   before_script:
-    - dnf install -y gcc gobject-introspection-devel glib-devel gtk-doc intltool make polkit-devel redhat-rpm-config systemd-devel
+    - dnf install -y gcc meson ninja-build gobject-introspection-devel glib-devel gtk-doc gettext-devel make polkit-devel redhat-rpm-config systemd-devel dbus-devel
   script:
-    - ./autogen.sh --enable-gtk-doc
-    - make
+    - meson -Dgtk_doc=true _build
+    - ninja -C _build all
