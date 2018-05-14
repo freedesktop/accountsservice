@@ -419,12 +419,10 @@ _systemd_session_is_on_our_seat (ActUserManager *manager,
 {
         ActUserManagerPrivate *priv = act_user_manager_get_instance_private (manager);
         int   res;
-        int   ret;
         g_autofree gchar *session_seat = NULL;
 
-        ret = FALSE;
         res = sd_session_get_seat (session_id, &session_seat);
-        if (res == -ENOENT) {
+        if (res == -ENODATA) {
                 return FALSE;
         } else if (res < 0) {
                 g_debug ("failed to determine seat of session %s: %s",
@@ -482,7 +480,7 @@ act_user_manager_goto_login_session (ActUserManager *manager)
 }
 
 #ifdef WITH_SYSTEMD
-gboolean
+static gboolean
 _can_activate_systemd_sessions (ActUserManager *manager)
 {
         ActUserManagerPrivate *priv = act_user_manager_get_instance_private (manager);
@@ -490,8 +488,8 @@ _can_activate_systemd_sessions (ActUserManager *manager)
 
         res = sd_seat_can_multi_session (priv->seat.id);
         if (res < 0) {
-                g_warning ("unable to determine if seat can activate sessions: %s",
-                           strerror (-res));
+                g_warning ("unable to determine if seat %s can activate sessions: %s",
+                           priv->seat.id, strerror (-res));
                 return FALSE;
         }
 
@@ -711,6 +709,108 @@ on_get_seat_id_finished (GObject        *object,
 }
 
 #ifdef WITH_SYSTEMD
+static gboolean
+_systemd_session_is_graphical (const char *session_id)
+{
+        const gchar * const graphical_session_types[] = { "wayland", "x11", "mir", NULL };
+        int saved_errno;
+        g_autofree gchar *type = NULL;
+
+        saved_errno = sd_session_get_type (session_id, &type);
+        if (saved_errno < 0) {
+                g_warning ("Couldn't get type for session '%s': %s",
+                           session_id,
+                           g_strerror (-saved_errno));
+                return FALSE;
+        }
+
+        if (!g_strv_contains (graphical_session_types, type)) {
+                g_debug ("Session '%s' is not a graphical session (type: '%s')",
+                         session_id,
+                         type);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+static gboolean
+_systemd_session_is_active (const char *session_id)
+{
+        const gchar * const active_states[] = { "active", "online", NULL };
+        int saved_errno;
+        g_autofree gchar *state = NULL;
+
+        /*
+         * display sessions can be 'closing' if they are logged out but some
+         * processes are lingering; we shouldn't consider these (this is
+         * checking for a race condition since we specified that we want online
+         * sessions only)
+         */
+        saved_errno = sd_session_get_state (session_id, &state);
+        if (saved_errno < 0) {
+                g_warning ("Couldn't get state for session '%s': %s",
+                           session_id,
+                           g_strerror (-saved_errno));
+                return FALSE;
+        }
+
+        if (!g_strv_contains (active_states, state)) {
+                g_debug ("Session '%s' is not active or online", session_id);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+static gboolean
+_find_graphical_systemd_session (char **session_id)
+{
+        char *local_session_id = NULL;
+        g_auto(GStrv) sessions = NULL;
+        int n_sessions;
+
+        /* filter level 0 means to include inactive and active sessions
+         * (>0 would mean to return only the active session, and <0 would mean to
+         * include closing sessions too)
+         */
+        static int filter_level = 0;
+
+        g_return_val_if_fail (session_id != NULL, FALSE);
+
+        g_debug ("Finding a graphical session for user %d", getuid ());
+
+        n_sessions = sd_uid_get_sessions (getuid (), filter_level, &sessions);
+
+        if (n_sessions < 0) {
+                g_critical ("Failed to get sessions for user %d", getuid ());
+                return FALSE;
+        }
+
+        for (int i = 0; i < n_sessions; ++i) {
+                g_debug ("Considering session '%s'", sessions[i]);
+
+                if (!_systemd_session_is_graphical (sessions[i]))
+                        continue;
+
+                if (!_systemd_session_is_active (sessions[i]))
+                        continue;
+
+                /*
+                 * We get the sessions from newest to oldest, so take the last
+                 * one we find that's good
+                 */
+                local_session_id = sessions[i];
+        }
+
+        if (local_session_id == NULL)
+                return FALSE;
+
+        *session_id = g_strdup (local_session_id);
+
+        return TRUE;
+}
+
 static void
 _get_systemd_seat_id (ActUserManager *manager)
 {
@@ -718,8 +818,16 @@ _get_systemd_seat_id (ActUserManager *manager)
         int   res;
         g_autofree gchar *seat_id = NULL;
 
-        res = sd_session_get_seat (NULL, &seat_id);
-        if (res == -ENOENT) {
+        if (priv->seat.session_id == NULL) {
+                if (!_find_graphical_systemd_session (&priv->seat.session_id)) {
+                        g_warning ("Could not get session");
+                        return;
+                }
+        }
+
+        res = sd_session_get_seat (priv->seat.session_id, &seat_id);
+
+        if (res == -ENODATA) {
                 seat_id = NULL;
         } else if (res < 0) {
                 g_warning ("Could not get current seat: %s",
@@ -1168,14 +1276,11 @@ _get_current_systemd_session_id (ActUserManager *manager)
 {
         ActUserManagerPrivate *priv = act_user_manager_get_instance_private (manager);
         g_autofree gchar *session_id = NULL;
-        int   res;
 
-        res = sd_pid_get_session (0, &session_id);
-
-        if (res == -ENOENT) {
-                g_debug ("Failed to identify the current session: %s",
-                         strerror (-res));
-                session_id = NULL;
+        if (!_find_graphical_systemd_session (&session_id)) {
+                g_debug ("Failed to identify the current session");
+                unload_seat (manager);
+                return;
         }
 
         priv->seat.session_id = g_strdup (session_id);
