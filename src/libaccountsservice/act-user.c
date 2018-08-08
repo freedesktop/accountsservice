@@ -1027,6 +1027,44 @@ act_user_get_x_session (ActUser *user)
 }
 
 /**
+ * act_user_get_session:
+ * @user: a #ActUser
+ *
+ * Returns the path to the configured session for @user.
+ *
+ * Returns: (transfer none): a path to an icon
+ */
+const char *
+act_user_get_session (ActUser *user)
+{
+        g_return_val_if_fail (ACT_IS_USER (user), NULL);
+
+        if (user->accounts_proxy == NULL)
+                return NULL;
+
+        return accounts_user_get_session (user->accounts_proxy);
+}
+
+/**
+ * act_user_get_session_type:
+ * @user: a #ActUser
+ *
+ * Returns the type of the configured session for @user.
+ *
+ * Returns: (transfer none): a path to an icon
+ */
+const char *
+act_user_get_session_type (ActUser *user)
+{
+        g_return_val_if_fail (ACT_IS_USER (user), NULL);
+
+        if (user->accounts_proxy == NULL)
+                return NULL;
+
+        return accounts_user_get_session_type (user->accounts_proxy);
+}
+
+/**
  * act_user_get_object_path:
  * @user: a #ActUser
  *
@@ -1337,6 +1375,61 @@ act_user_set_x_session (ActUser    *user,
         }
 }
 
+/**
+ * act_user_set_session:
+ * @user: the user object to alter.
+ * @session: a session (e.g. gnome)
+ *
+ * Assigns a new session for @user.
+ *
+ * Note this function is synchronous and ignores errors.
+ **/
+void
+act_user_set_session (ActUser    *user,
+                      const char *session)
+{
+        g_autoptr(GError) error = NULL;
+
+        g_return_if_fail (ACT_IS_USER (user));
+        g_return_if_fail (session != NULL);
+        g_return_if_fail (ACCOUNTS_IS_USER (user->accounts_proxy));
+
+        if (!accounts_user_call_set_session_sync (user->accounts_proxy,
+                                                  session,
+                                                  NULL,
+                                                  &error)) {
+                g_warning ("SetSession call failed: %s", error->message);
+                return;
+        }
+}
+
+/**
+ * act_user_set_session_type:
+ * @user: the user object to alter.
+ * @session_type: a type of session (e.g. "wayland" or "x11")
+ *
+ * Assigns a type to the session for @user.
+ *
+ * Note this function is synchronous and ignores errors.
+ **/
+void
+act_user_set_session_type (ActUser    *user,
+                           const char *session_type)
+{
+        g_autoptr(GError) error = NULL;
+
+        g_return_if_fail (ACT_IS_USER (user));
+        g_return_if_fail (session_type != NULL);
+        g_return_if_fail (ACCOUNTS_IS_USER (user->accounts_proxy));
+
+        if (!accounts_user_call_set_session_type_sync (user->accounts_proxy,
+                                                       session_type,
+                                                       NULL,
+                                                       &error)) {
+                g_warning ("SetSessionType call failed: %s", error->message);
+                return;
+        }
+}
 
 /**
  * act_user_set_location:

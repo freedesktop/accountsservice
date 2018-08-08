@@ -168,6 +168,89 @@
         <doc:para>
           The expectation is that display managers will log the user in to this
           specified session, if available.
+
+          Note this call is deprecated and has been superceded by SetSession since
+          not all graphical sessions use X as the display server.
+        </doc:para>
+      </doc:description>
+      <doc:permission>
+        The caller needs one of the following PolicyKit authorizations:
+        <doc:list>
+          <doc:item>
+            <doc:term>org.freedesktop.accounts.change-own-user-data</doc:term>
+            <doc:definition>To change his own language</doc:definition>
+          </doc:item>
+          <doc:item>
+            <doc:term>org.freedesktop.accounts.user-administration</doc:term>
+            <doc:definition>To change the language of another user</doc:definition>
+          </doc:item>
+        </doc:list>
+      </doc:permission>
+      <doc:errors>
+        <doc:error name="org.freedesktop.Accounts.Error.PermissionDenied">if the caller lacks the appropriate PolicyKit authorization</doc:error>
+        <doc:error name="org.freedesktop.Accounts.Error.Failed">if the operation failed</doc:error>
+      </doc:errors>
+   </doc:doc>
+  </method>
+
+  <method name="SetSession">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="user_set_session"/>
+    <arg name="session" direction="in" type="s">
+      <doc:doc>
+        <doc:summary>
+          The new session to start (e.g. "gnome-xorg")
+        </doc:summary>
+      </doc:doc>
+    </arg>
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+          Sets the users wayland or x session.
+        </doc:para>
+        <doc:para>
+          The expectation is that display managers will log the user in to this
+          specified session, if available.
+        </doc:para>
+      </doc:description>
+      <doc:permission>
+        The caller needs one of the following PolicyKit authorizations:
+        <doc:list>
+          <doc:item>
+            <doc:term>org.freedesktop.accounts.change-own-user-data</doc:term>
+            <doc:definition>To change his own language</doc:definition>
+          </doc:item>
+          <doc:item>
+            <doc:term>org.freedesktop.accounts.user-administration</doc:term>
+            <doc:definition>To change the language of another user</doc:definition>
+          </doc:item>
+        </doc:list>
+      </doc:permission>
+      <doc:errors>
+        <doc:error name="org.freedesktop.Accounts.Error.PermissionDenied">if the caller lacks the appropriate PolicyKit authorization</doc:error>
+        <doc:error name="org.freedesktop.Accounts.Error.Failed">if the operation failed</doc:error>
+      </doc:errors>
+   </doc:doc>
+  </method>
+
+  <method name="SetSessionType">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="user_set_session_type"/>
+    <arg name="session_type" direction="in" type="s">
+      <doc:doc>
+        <doc:summary>
+          The type of the new session to start (e.g. "wayland" or "x11")
+        </doc:summary>
+      </doc:doc>
+    </arg>
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+          Sets the session type of the users session.
+        </doc:para>
+        <doc:para>
+          Display managers may use this property to decide what type of display server to use when
+          loading the session
         </doc:para>
       </doc:description>
       <doc:permission>
@@ -663,6 +746,26 @@
       <doc:description>
         <doc:para>
           The users language, as a locale specification like "de_DE.UTF-8".
+        </doc:para>
+      </doc:description>
+    </doc:doc>
+  </property>
+
+  <property name="Session" type="s" access="read">
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+          The users Wayland or X session.
+        </doc:para>
+      </doc:description>
+    </doc:doc>
+  </property>
+
+  <property name="SessionType" type="s" access="read">
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+          The type of session the user should use (e.g. "wayland" or "x11")
         </doc:para>
       </doc:description>
     </doc:doc>

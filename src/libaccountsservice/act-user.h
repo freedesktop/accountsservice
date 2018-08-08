@@ -78,6 +78,8 @@ gboolean       act_user_is_nonexistent            (ActUser   *user);
 const char    *act_user_get_icon_file             (ActUser   *user);
 const char    *act_user_get_language              (ActUser   *user);
 const char    *act_user_get_x_session             (ActUser   *user);
+const char    *act_user_get_session               (ActUser   *user);
+const char    *act_user_get_session_type          (ActUser   *user);
 const char    *act_user_get_primary_session_id    (ActUser   *user);
 
 gint           act_user_collate                   (ActUser   *user1,
@@ -98,6 +100,10 @@ void           act_user_set_language              (ActUser    *user,
                                                    const char *language);
 void           act_user_set_x_session             (ActUser    *user,
                                                    const char *x_session);
+void           act_user_set_session               (ActUser    *user,
+                                                   const char *session);
+void           act_user_set_session_type          (ActUser    *user,
+                                                   const char *session_type);
 void           act_user_set_location              (ActUser    *user,
                                                    const char *location);
 void           act_user_set_user_name             (ActUser    *user,

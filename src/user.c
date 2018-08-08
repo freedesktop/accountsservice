@@ -259,6 +259,21 @@ user_update_from_keyfile (User     *user,
         s = g_key_file_get_string (keyfile, "User", "XSession", NULL);
         if (s != NULL) {
                 accounts_user_set_xsession (ACCOUNTS_USER (user), s);
+
+                /* for backward compat */
+                accounts_user_set_session (ACCOUNTS_USER (user), s);
+                g_clear_pointer (&s, g_free);
+        }
+
+        s = g_key_file_get_string (keyfile, "User", "Session", NULL);
+        if (s != NULL) {
+                accounts_user_set_session (ACCOUNTS_USER (user), s);
+                g_clear_pointer (&s, g_free);
+        }
+
+        s = g_key_file_get_string (keyfile, "User", "SessionType", NULL);
+        if (s != NULL) {
+                accounts_user_set_session_type (ACCOUNTS_USER (user), s);
                 g_clear_pointer (&s, g_free);
         }
 
@@ -325,6 +340,12 @@ user_save_to_keyfile (User     *user,
 
         if (accounts_user_get_language (ACCOUNTS_USER (user)))
                 g_key_file_set_string (keyfile, "User", "Language", accounts_user_get_language (ACCOUNTS_USER (user)));
+
+        if (accounts_user_get_session (ACCOUNTS_USER (user)))
+                g_key_file_set_string (keyfile, "User", "Session", accounts_user_get_session (ACCOUNTS_USER (user)));
+
+        if (accounts_user_get_session_type (ACCOUNTS_USER (user)))
+                g_key_file_set_string (keyfile, "User", "SessionType", accounts_user_get_session_type (ACCOUNTS_USER (user)));
 
         if (accounts_user_get_xsession (ACCOUNTS_USER (user)))
                 g_key_file_set_string (keyfile, "User", "XSession", accounts_user_get_xsession (ACCOUNTS_USER (user)));
@@ -1019,6 +1040,104 @@ user_set_language (AccountsUser          *auser,
                                  context,
                                  g_strdup (language),
                                  (GDestroyNotify)g_free);
+
+        return TRUE;
+}
+
+static void
+user_change_session_authorized_cb (Daemon                *daemon,
+                                   User                  *user,
+                                   GDBusMethodInvocation *context,
+                                   gpointer               user_data)
+
+{
+        const gchar *session = user_data;
+
+        if (g_strcmp0 (accounts_user_get_session (ACCOUNTS_USER (user)), session) != 0) {
+                accounts_user_set_session (ACCOUNTS_USER (user), session);
+
+                save_extra_data (user);
+        }
+
+        accounts_user_complete_set_session (ACCOUNTS_USER (user), context);
+}
+
+static gboolean
+user_set_session (AccountsUser          *auser,
+                  GDBusMethodInvocation *context,
+                  const gchar           *session)
+{
+        User *user = (User*)auser;
+        int uid;
+        const gchar *action_id;
+
+        if (!get_caller_uid (context, &uid)) {
+                throw_error (context, ERROR_FAILED, "identifying caller failed");
+                return FALSE;
+        }
+
+        if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
+                action_id = "org.freedesktop.accounts.change-own-user-data";
+        else
+                action_id = "org.freedesktop.accounts.user-administration";
+
+        daemon_local_check_auth (user->daemon,
+                                 user,
+                                 action_id,
+                                 TRUE,
+                                 user_change_session_authorized_cb,
+                                 context,
+                                 g_strdup (session),
+                                 (GDestroyNotify) g_free);
+
+        return TRUE;
+}
+
+static void
+user_change_session_type_authorized_cb (Daemon                *daemon,
+                                        User                  *user,
+                                        GDBusMethodInvocation *context,
+                                        gpointer               user_data)
+
+{
+        const gchar *session_type = user_data;
+
+        if (g_strcmp0 (accounts_user_get_session_type (ACCOUNTS_USER (user)), session_type) != 0) {
+                accounts_user_set_session_type (ACCOUNTS_USER (user), session_type);
+
+                save_extra_data (user);
+        }
+
+        accounts_user_complete_set_session_type (ACCOUNTS_USER (user), context);
+}
+
+static gboolean
+user_set_session_type (AccountsUser          *auser,
+                       GDBusMethodInvocation *context,
+                       const gchar           *session_type)
+{
+        User *user = (User*)auser;
+        int uid;
+        const gchar *action_id;
+
+        if (!get_caller_uid (context, &uid)) {
+                throw_error (context, ERROR_FAILED, "identifying caller failed");
+                return FALSE;
+        }
+
+        if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
+                action_id = "org.freedesktop.accounts.change-own-user-data";
+        else
+                action_id = "org.freedesktop.accounts.user-administration";
+
+        daemon_local_check_auth (user->daemon,
+                                 user,
+                                 action_id,
+                                 TRUE,
+                                 user_change_session_type_authorized_cb,
+                                 context,
+                                 g_strdup (session_type),
+                                 (GDestroyNotify) g_free);
 
         return TRUE;
 }
@@ -1993,6 +2112,8 @@ user_accounts_user_iface_init (AccountsUserIface *iface)
         iface->handle_set_shell = user_set_shell;
         iface->handle_set_user_name = user_set_user_name;
         iface->handle_set_xsession = user_set_x_session;
+        iface->handle_set_session = user_set_session;
+        iface->handle_set_session_type = user_set_session_type;
         iface->handle_get_password_expiration_policy = user_get_password_expiration_policy;
 }
 
