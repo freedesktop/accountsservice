@@ -838,6 +838,16 @@
     </doc:doc>
   </property>
 
+  <property name="Saved" type="b" access="read">
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+           Whether the users account has retained state
+        </doc:para>
+      </doc:description>
+    </doc:doc>
+  </property>
+
   <property name="Locked" type="b" access="read">
     <doc:doc>
       <doc:description>

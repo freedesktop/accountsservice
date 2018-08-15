@@ -311,6 +311,7 @@ user_update_from_keyfile (User     *user,
         g_clear_pointer (&user->keyfile, g_key_file_unref);
         user->keyfile = g_key_file_ref (keyfile);
         user_set_cached (user, TRUE);
+        user_set_saved (user, TRUE);
 
         g_object_thaw_notify (G_OBJECT (user));
 }
@@ -384,6 +385,8 @@ save_extra_data (User *user)
                                      accounts_user_get_user_name (ACCOUNTS_USER (user)),
                                      NULL);
         g_file_set_contents (filename, data, -1, &error);
+
+        user_set_saved (user, TRUE);
 }
 
 static void
@@ -798,6 +801,13 @@ user_set_cached (User     *user,
                  gboolean  cached)
 {
         user->cached = cached;
+}
+
+void
+user_set_saved (User     *user,
+                gboolean  saved)
+{
+        accounts_user_set_saved (ACCOUNTS_USER (user), saved);
 }
 
 static void

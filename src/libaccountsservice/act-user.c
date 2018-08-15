@@ -877,6 +877,25 @@ act_user_is_logged_in_anywhere (ActUser *user)
 }
 
 /**
+ * act_user_get_saved:
+ * @user: a #ActUser
+ *
+ * Returns whether or not the #ActUser account has retained state in accountsservice.
+ *
+ * Returns: %TRUE or %FALSE
+ */
+gboolean
+act_user_get_saved (ActUser *user)
+{
+        g_return_val_if_fail (ACT_IS_USER (user), TRUE);
+
+        if (user->accounts_proxy == NULL)
+                return FALSE;
+
+        return accounts_user_get_saved (user->accounts_proxy);
+}
+
+/**
  * act_user_get_locked:
  * @user: a #ActUser
  *

@@ -1214,6 +1214,7 @@ daemon_uncache_user_authorized_cb (Daemon                *daemon,
 
         remove_cache_files (user_name);
 
+        user_set_saved (user, FALSE);
         user_set_cached (user, FALSE);
 
         accounts_accounts_complete_uncache_user (NULL, context);
@@ -1278,6 +1279,8 @@ daemon_delete_user_authorized_cb (Daemon                *daemon,
         }
 
         remove_cache_files (pwent->pw_name);
+
+        user_set_saved (user, FALSE);
 
         argv[0] = "/usr/sbin/userdel";
         if (ud->remove_files) {

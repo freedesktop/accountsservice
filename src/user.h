@@ -66,6 +66,8 @@ void           user_update_system_account_property (User          *user,
 gboolean       user_get_cached              (User          *user);
 void           user_set_cached              (User          *user,
                                              gboolean       cached);
+void           user_set_saved               (User          *user,
+                                             gboolean       saved);
 
 void           user_register                (User          *user);
 void           user_unregister              (User          *user);
