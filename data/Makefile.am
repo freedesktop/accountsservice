@@ -18,7 +18,8 @@ policydir       = $(datadir)/polkit-1/actions
 policy_in_files = org.freedesktop.accounts.policy.in
 policy_DATA     = $(policy_in_files:.policy.in=.policy)
 
-@INTLTOOL_POLICY_RULE@
+org.freedesktop.accounts.policy: org.freedesktop.accounts.policy.in
+	$(AM_V_GEN)$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
 
 if HAVE_SYSTEMD
 systemdsystemunit_DATA = \
