@@ -40,11 +40,9 @@ G_BEGIN_DECLS
 #define DAEMON_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), TYPE_DAEMON, DaemonClass))
 
 typedef struct DaemonClass DaemonClass;
-typedef struct DaemonPrivate DaemonPrivate;
 
 struct Daemon {
         AccountsAccountsSkeleton parent;
-        DaemonPrivate *priv;
 };
 
 struct DaemonClass {

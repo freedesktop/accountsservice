@@ -35,16 +35,15 @@ G_BEGIN_DECLS
 #define ACT_IS_USER_MANAGER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), ACT_TYPE_USER_MANAGER))
 #define ACT_USER_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), ACT_TYPE_USER_MANAGER, ActUserManagerClass))
 
-typedef struct ActUserManagerPrivate ActUserManagerPrivate;
 typedef struct _ActUserManager ActUserManager;
 typedef struct _ActUserManagerClass ActUserManagerClass;
 
 struct _ActUserManager
 {
-        GObject                parent;
+        GObject  parent;
 
         /*< private >*/
-        ActUserManagerPrivate *priv;
+        gpointer deprecated;
 };
 
 struct _ActUserManagerClass
