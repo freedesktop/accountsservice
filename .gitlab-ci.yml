@@ -1,0 +1,16 @@
+build-ubuntu:
+  image: ubuntu:rolling
+  before_script:
+    - apt-get update
+    - apt-get install -q -y --no-install-recommends gobject-introspection gtk-doc-tools intltool libglib2.0-dev libpolkit-gobject-1-dev libsystemd-dev libtool
+  script:
+    - ./autogen.sh --enable-gtk-doc --with-systemdsystemunitdir=/lib/systemd/system
+    - make
+
+build-fedora:
+  image: fedora:latest
+  before_script:
+    - dnf install -y gcc gobject-introspection-devel glib-devel gtk-doc intltool make polkit-devel redhat-rpm-config systemd-devel
+  script:
+    - ./autogen.sh --enable-gtk-doc
+    - make
