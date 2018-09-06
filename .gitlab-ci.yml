@@ -5,7 +5,7 @@ build-ubuntu:
     - apt-get install -q -y --no-install-recommends gobject-introspection gtk-doc-tools gettext-dev libglib2.0-dev libpolkit-gobject-1-dev libsystemd-dev libtool
   script:
     - ./autogen.sh --enable-gtk-doc --with-systemdsystemunitdir=/lib/systemd/system
-    - make
+    - make distcheck
 
 build-fedora:
   image: fedora:latest
@@ -13,4 +13,4 @@ build-fedora:
     - dnf install -y gcc gobject-introspection-devel glib-devel gtk-doc gettext-devel make polkit-devel redhat-rpm-config systemd-devel
   script:
     - ./autogen.sh --enable-gtk-doc
-    - make
+    - make distcheck
