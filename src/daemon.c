@@ -259,8 +259,7 @@ entry_generator_cachedir (Daemon       *daemon,
         g_autoptr(GError) error = NULL;
         gboolean regular;
         GHashTableIter iter;
-        const gchar *name;
-        User *user;
+        gpointer key, value;
         GDir *dir;
 
         /* First iteration */
@@ -315,7 +314,9 @@ entry_generator_cachedir (Daemon       *daemon,
 
         /* Update all the users from the files in the cache dir */
         g_hash_table_iter_init (&iter, users);
-        while (g_hash_table_iter_next (&iter, (gpointer *)&name, (gpointer *)&user)) {
+        while (g_hash_table_iter_next (&iter, &key, &value)) {
+                const gchar *name = key;
+                User *user = value;
                 g_autofree gchar *filename = NULL;
                 g_autoptr(GKeyFile) key_file = NULL;
 
@@ -450,8 +451,7 @@ reload_users (Daemon *daemon)
         GHashTable *local;
         GHashTableIter iter;
         gsize number_of_normal_users = 0;
-        gpointer name;
-        User *user;
+        gpointer name, value;
 
         /* Track the users that we saw during our (re)load */
         users = create_users_hash_table ();
@@ -479,7 +479,8 @@ reload_users (Daemon *daemon)
 
         /* Count the non-system users. Mark which users are local, which are not. */
         g_hash_table_iter_init (&iter, users);
-        while (g_hash_table_iter_next (&iter, &name, (gpointer *)&user)) {
+        while (g_hash_table_iter_next (&iter, &name, &value)) {
+                User *user = value;
                 if (!user_get_system_account (user))
                         number_of_normal_users++;
                 user_update_local_account_property (user, g_hash_table_lookup (local, name) != NULL);
@@ -504,7 +505,8 @@ reload_users (Daemon *daemon)
 
         /* Remove all the old users */
         g_hash_table_iter_init (&iter, old_users);
-        while (g_hash_table_iter_next (&iter, &name, (gpointer *)&user)) {
+        while (g_hash_table_iter_next (&iter, &name, &value)) {
+                User *user = value;
                 User *refreshed_user;
 
                 refreshed_user = g_hash_table_lookup (users, name);
@@ -518,7 +520,8 @@ reload_users (Daemon *daemon)
 
         /* Register all the new users */
         g_hash_table_iter_init (&iter, users);
-        while (g_hash_table_iter_next (&iter, &name, (gpointer *)&user)) {
+        while (g_hash_table_iter_next (&iter, &name, &value)) {
+                User *user = value;
                 User *stale_user;
 
                 stale_user = g_hash_table_lookup (old_users, name);
@@ -959,15 +962,16 @@ finish_list_cached_users (gpointer user_data)
         ListUserData *data = user_data;
         g_autoptr(GPtrArray) object_paths = NULL;
         GHashTableIter iter;
-        const gchar *name;
-        User *user;
+        gpointer key, value;
         uid_t uid;
         const gchar *shell;
 
         object_paths = g_ptr_array_new ();
 
         g_hash_table_iter_init (&iter, data->daemon->priv->users);
-        while (g_hash_table_iter_next (&iter, (gpointer *)&name, (gpointer *)&user)) {
+        while (g_hash_table_iter_next (&iter, &key, &value)) {
+                const gchar *name = key;
+                User *user = value;
                 uid = user_get_uid (user);
                 shell = user_get_shell (user);
 
