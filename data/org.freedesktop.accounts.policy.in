@@ -8,8 +8,8 @@
   <icon_name>stock_person</icon_name>
 
   <action id="org.freedesktop.accounts.change-own-user-data">
-    <_description>Change your own user data</_description>
-    <_message>Authentication is required to change your own user data</_message>
+    <description>Change your own user data</description>
+    <message>Authentication is required to change your own user data</message>
     <defaults>
       <allow_any>yes</allow_any>
       <allow_inactive>yes</allow_inactive>
@@ -18,8 +18,8 @@
   </action>
 
   <action id="org.freedesktop.accounts.change-own-password">
-    <_description>Change your own user password</_description>
-    <_message>Authentication is required to change your own user password</_message>
+    <description>Change your own user password</description>
+    <message>Authentication is required to change your own user password</message>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>auth_admin</allow_inactive>
@@ -28,8 +28,8 @@
   </action>
 
   <action id="org.freedesktop.accounts.user-administration">
-    <_description>Manage user accounts</_description>
-    <_message>Authentication is required to change user data</_message>
+    <description>Manage user accounts</description>
+    <message>Authentication is required to change user data</message>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>auth_admin</allow_inactive>
@@ -38,8 +38,8 @@
   </action>
 
   <action id="org.freedesktop.accounts.set-login-option">
-    <_description>Change the login screen configuration</_description>
-    <_message>Authentication is required to change the login screen configuration</_message>
+    <description>Change the login screen configuration</description>
+    <message>Authentication is required to change the login screen configuration</message>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>auth_admin</allow_inactive>

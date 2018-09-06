@@ -155,7 +155,7 @@ main (int argc, char *argv[])
         };
 
         setlocale (LC_ALL, "");
-        bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+        bind_textdomain_codeset (PACKAGE, "UTF-8");
 
 #if !GLIB_CHECK_VERSION (2, 35, 3)
         g_type_init ();
@@ -167,7 +167,7 @@ main (int argc, char *argv[])
         }
 
         context = g_option_context_new ("");
-        g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
+        g_option_context_set_translation_domain (context, PACKAGE);
         g_option_context_set_summary (context, _("Provides D-Bus interfaces for querying and manipulating\nuser account information."));
         g_option_context_add_main_entries (context, entries, NULL);
         if (!g_option_context_parse (context, &argc, &argv, &error)) {
