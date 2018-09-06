@@ -23,6 +23,9 @@ act_user_get_password_hint
 act_user_get_password_mode
 act_user_get_primary_session_id
 act_user_get_real_name
+act_user_get_saved
+act_user_get_session
+act_user_get_session_type
 act_user_get_shell
 act_user_get_uid
 act_user_get_user_name
@@ -44,6 +47,8 @@ act_user_set_password
 act_user_set_password_hint
 act_user_set_password_mode
 act_user_set_real_name
+act_user_set_session
+act_user_set_session_type
 act_user_set_user_name
 act_user_set_x_session
 <SUBSECTION Standard>
