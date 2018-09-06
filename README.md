@@ -1,3 +1,5 @@
+[![Build Status](https://gitlab.freedesktop.org/accountsservice/accountsservice/badges/master/build.svg)](https://gitlab.freedesktop.org/accountsservice/accountsservice/pipelines)
+
 Overview
 ========
 
