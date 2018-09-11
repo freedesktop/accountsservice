@@ -53,7 +53,6 @@ config_h.set('_DEFAULT_SOURCE', true)
 config_h.set('_GNU_SOURCE', true)
 
 # i18n
-config_h.set_quoted('PACKAGE', act_gettext)
 config_h.set_quoted('GETTEXT_PACKAGE', act_gettext)
 
 # headers
