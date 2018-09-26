@@ -1,12 +1,3 @@
-build-ubuntu:
-  image: ubuntu:rolling
-  before_script:
-    - apt-get update
-    - apt-get install -q -y --no-install-recommends meson ninja-build gobject-introspection gtk-doc-tools gettext libglib2.0-dev libpolkit-gobject-1-dev libsystemd-dev libdbus-1-dev
-  script:
-    - meson -Dgtk_doc=true _build
-    - ninja -C _build all
-
 build-fedora:
   image: fedora:latest
   before_script:
@@ -14,3 +5,13 @@ build-fedora:
   script:
     - meson -Dgtk_doc=true _build
     - ninja -C _build all
+
+#build-ubuntu:
+#  image: ubuntu:rolling
+#  before_script:
+#    - apt-get update
+#    - apt-get install -q -y --no-install-recommends meson ninja-build gobject-introspection gtk-doc-tools gettext libglib2.0-dev libpolkit-gobject-1-dev libsystemd-dev libdbus-1-dev
+#  script:
+#    - meson -Dgtk_doc=true _build
+#    - ninja -C _build all
+
