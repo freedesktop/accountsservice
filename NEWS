@@ -1,3 +1,7 @@
+Changes in 0.6.53
+=================
+* Fix introspection
+
 Changes in 0.6.52
 =================
 * migrate to meson and gettext (instead of autogoo and intltool)
