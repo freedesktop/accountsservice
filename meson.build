@@ -1,6 +1,6 @@
 project(
   'AccountsService', 'c',
-  version: '0.6.50',
+  version: '0.6.51',
   license: 'GPL3+',
   default_options: 'buildtype=debugoptimized',
   meson_version: '>= 0.46.0',
