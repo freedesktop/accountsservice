@@ -83,7 +83,7 @@ elif cc.has_header_symbol('paths.h', '_PATH_WTMPX')
   config_h.set('PATH_WTMP', '_PATH_WTMPX')
 else
   assert(run_command('test', '-e', '/var/log/utx.log').returncode() == 0, 'Do not know which filename to watch for wtmp changes')
-  config_h.set('PATH_WTMP', '/var/log/utx.log')
+  config_h.set_quoted('PATH_WTMP', '/var/log/utx.log')
 endif
 
 # compiler flags
