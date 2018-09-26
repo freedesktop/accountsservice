@@ -1,4 +1,4 @@
-Changes in 0.6.51
+Changes in 0.6.52
 =================
 * migrate to meson and gettext (instead of autogoo and intltool)
 * add code of conduct
