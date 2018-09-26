@@ -96,7 +96,7 @@ if get_option('introspection')
     sources: sources + headers + [enum_sources[1]],
     includes: ['GObject-2.0', 'Gio-2.0'],
     dependencies: libaccountsservice_dep,
-    namespace: meson.project_name(),
+    namespace: 'AccountsService',
     nsversion: act_api_version,
     identifier_prefix: act_id,
     header: join_paths(subdir, 'act.h'),
