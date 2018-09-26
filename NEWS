@@ -1,3 +1,13 @@
+Changes in 0.6.51
+=================
+* migrate to meson and gettext (instead of autogoo and intltool)
+* add code of conduct
+* Add new session and session type properties (to replace XSession)
+* Try to handle misbehaving logind a little better
+* misc mixes and code modernization
+* Add new "Saved" property to say whether a cached user is stored on
+  disk.
+
 Changes in 0.6.50
 =================
 * Fix insufficient path check on user icon files
