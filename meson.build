@@ -6,7 +6,7 @@ project(
   meson_version: '>= 0.46.0',
 )
 
-act_name = meson.project_name().to_lower()
+act_name = meson.project_name()
 act_version = meson.project_version()
 
 act_api_version = '1.0'

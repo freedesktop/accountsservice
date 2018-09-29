@@ -26,8 +26,8 @@ deps = [
 cflags = [
   '-DLOCALSTATEDIR="@0@"'.format(act_localstatedir),
   '-DDATADIR="@0@"'.format(act_datadir),
-  '-DICONDIR="@0@"'.format(join_paths(act_localstatedir, 'lib', meson.project_name(), 'icons')),
-  '-DUSERDIR="@0@"'.format(join_paths(act_localstatedir, 'lib', meson.project_name(), 'users')),
+  '-DICONDIR="@0@"'.format(join_paths(act_localstatedir, 'lib', 'AccountsService', 'icons')),
+  '-DUSERDIR="@0@"'.format(join_paths(act_localstatedir, 'lib', 'AccountsService', 'users')),
 ]
 
 libaccounts_generated = static_library(
