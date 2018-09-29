@@ -1,3 +1,7 @@
+Changes in 0.6.54
+=================
+* Fix user state dirs
+
 Changes in 0.6.53
 =================
 * Fix introspection
