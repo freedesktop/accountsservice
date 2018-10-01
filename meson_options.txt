@@ -4,7 +4,7 @@ option('gdmconffile', type: 'string', value: '/etc/gdm/custom.conf', description
 option('admin_group', type: 'string', value: '', description: 'Set group for administrative accounts')
 option('user_heuristics', type: 'boolean', value: true, description: 'Enable heuristics for guessing system vs. human users in the range 500-minimum-uid')
 option('extra_admin_groups', type: 'array', value: [], description: 'Comma-separated list of extra groups that administrator users are part of')
-option('minimum_uid', type: 'string', value: '1000', description: 'Set minimum uid for human users')
+option('minimum_uid', type: 'integer', value: 1000, description: 'Set minimum uid for human users')
 
 option('systemd', type: 'boolean', value: false, description: 'Use systemd')
 option('elogind', type: 'boolean', value: false, description: 'Use elogind')

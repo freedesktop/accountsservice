@@ -161,7 +161,7 @@ config_h.set_quoted('ADMIN_GROUP', admin_group)
 config_h.set_quoted('EXTRA_ADMIN_GROUPS', extra_admin_groups)
 
 config_h.set('ENABLE_USER_HEURISTICS', get_option('user_heuristics'))
-config_h.set_quoted('MINIMUM_UID', get_option('minimum_uid'))
+config_h.set('MINIMUM_UID', get_option('minimum_uid'))
 
 # GDM
 gdm_conf_file = get_option('gdmconffile')
