@@ -87,7 +87,11 @@ pkg.generate(
   description: 'Client Library for communicating with accounts service',
   filebase: act_name,
   subdirs: act_api_name,
-  variables: 'exec_prefix=${prefix}',
+  variables: [
+    'exec_prefix=${prefix}',
+    'datadir=${prefix}/' + get_option('datadir'),
+    'interfacesdir=${datadir}/accountsservice/interfaces',
+  ],
 )
 
 if get_option('introspection')
