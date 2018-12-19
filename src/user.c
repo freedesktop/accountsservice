@@ -48,6 +48,33 @@
 #include "accounts-user-generated.h"
 #include "util.h"
 
+enum {
+        PROP_0,
+        PROP_UID,
+        PROP_USER_NAME,
+        PROP_REAL_NAME,
+        PROP_ACCOUNT_TYPE,
+        PROP_HOME_DIR,
+        PROP_SHELL,
+        PROP_EMAIL,
+        PROP_LANGUAGE,
+        PROP_SESSION,
+        PROP_SESSION_TYPE,
+        PROP_X_SESSION,
+        PROP_LOCATION,
+        PROP_LOGIN_FREQUENCY,
+        PROP_LOGIN_TIME,
+        PROP_LOGIN_HISTORY,
+        PROP_ICON_FILE,
+        PROP_SAVED,
+        PROP_LOCKED,
+        PROP_PASSWORD_MODE,
+        PROP_PASSWORD_HINT,
+        PROP_AUTOMATIC_LOGIN,
+        PROP_SYSTEM_ACCOUNT,
+        PROP_LOCAL_ACCOUNT,
+};
+
 struct User {
         AccountsUserSkeleton parent;
 
@@ -2075,6 +2102,32 @@ user_set_automatic_login (AccountsUser          *auser,
 }
 
 static void
+user_set_property (GObject      *object,
+                   guint         param_id,
+                   const GValue *value,
+                   GParamSpec   *pspec)
+{
+        User *user = USER (object);
+
+        if (param_id == PROP_LOGIN_HISTORY) {
+            g_clear_pointer (&user->login_history, g_variant_unref);
+            user->login_history = g_variant_ref (g_value_get_variant (value));
+        }
+}
+
+static void
+user_get_property (GObject    *object,
+                   guint       param_id,
+                   GValue     *value,
+                   GParamSpec *pspec)
+{
+        User *user = USER (object);
+
+        if (param_id == PROP_LOGIN_HISTORY)
+            g_value_set_variant (value, user->login_history);
+}
+
+static void
 user_finalize (GObject *object)
 {
         User *user;
@@ -2088,7 +2141,7 @@ user_finalize (GObject *object)
 
         g_free (user->default_icon_file);
 
-	g_clear_pointer (&user->login_history, g_variant_unref);
+        g_clear_pointer (&user->login_history, g_variant_unref);
 
         if (G_OBJECT_CLASS (user_parent_class)->finalize)
                 (*G_OBJECT_CLASS (user_parent_class)->finalize) (object);
@@ -2101,7 +2154,12 @@ user_class_init (UserClass *class)
 
         gobject_class = G_OBJECT_CLASS (class);
 
+        gobject_class->get_property = user_get_property;
+        gobject_class->set_property = user_set_property;
+
         gobject_class->finalize = user_finalize;
+
+        g_object_class_override_property (gobject_class, PROP_LOGIN_HISTORY, "login-history");
 }
 
 static void

@@ -1167,7 +1167,7 @@ _act_user_update_from_object_path (ActUser    *user,
                                    const char *object_path)
 {
         AccountsUser    *accounts_proxy;
-        GError          *error = NULL;
+        g_autoptr(GError) error = NULL;
 
         g_return_if_fail (ACT_IS_USER (user));
         g_return_if_fail (object_path != NULL);
