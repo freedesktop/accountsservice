@@ -31,6 +31,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <glib-unix.h>
 
 #include "daemon.h"
@@ -39,9 +40,10 @@
 
 static gboolean
 ensure_directory (const char  *path,
+                  gint         mode,
                   GError     **error)
 {
-        if (g_mkdir_with_parents (path, 0775) < 0) {
+        if (g_mkdir_with_parents (path, mode) < 0) {
                 g_set_error (error,
                              G_FILE_ERROR,
                              g_file_error_from_errno (errno),
@@ -49,6 +51,54 @@ ensure_directory (const char  *path,
                              path);
                 return FALSE;
         }
+
+        if (g_chmod (path, mode) < 0) {
+                g_set_error (error,
+                             G_FILE_ERROR,
+                             g_file_error_from_errno (errno),
+                             "Failed to change permissions of directory %s: %m",
+                             path);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+static gboolean
+ensure_file_permissions (const char  *dir_path,
+                         gint         file_mode,
+                         GError     **error)
+{
+        GDir *dir = NULL;
+        const gchar *filename;
+        gint errsv = 0;
+
+        dir = g_dir_open (dir_path, 0, error);
+        if (dir == NULL)
+                return FALSE;
+
+        while ((filename = g_dir_read_name (dir)) != NULL) {
+                gchar *file_path = g_build_filename (dir_path, filename, NULL);
+
+                g_debug ("Changing permission of %s to %04o", file_path, file_mode);
+                if (g_chmod (file_path, file_mode) < 0)
+                        errsv = errno;
+
+                g_free (file_path);
+        }
+
+        g_dir_close (dir);
+
+        /* Report any errors after all chmod()s have been attempted. */
+        if (errsv != 0) {
+                g_set_error (error,
+                             G_FILE_ERROR,
+                             g_file_error_from_errno (errsv),
+                             "Failed to change permissions of files in directory %s: %m",
+                             dir_path);
+                return FALSE;
+        }
+
         return TRUE;
 }
 
@@ -61,8 +111,9 @@ on_bus_acquired (GDBusConnection  *connection,
         Daemon *daemon;
         g_autoptr(GError) error = NULL;
 
-        if (!ensure_directory (ICONDIR, &error) ||
-            !ensure_directory (USERDIR, &error)) {
+        if (!ensure_directory (ICONDIR, 0775, &error) ||
+            !ensure_directory (USERDIR, 0700, &error) ||
+            !ensure_file_permissions (USERDIR, 0600, &error)) {
                 g_printerr ("%s\n", error->message);
                 g_main_loop_quit (loop);
                 return;
