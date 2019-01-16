@@ -78,12 +78,32 @@ foreach func: check_functions
 endforeach
 
 if cc.has_header_symbol('utmpx.h', 'WTMPX_FILENAME', prefix: '#define _GNU_SOURCE')
+  code = '''#define _GNU_SOURCE
+  #include <utmpx.h>
+  int main (int argc, char **argv) {
+    printf ("%s\n", WTMPX_FILENAME);
+    return 0;
+  }
+  '''
+  result = cc.run(code, name : 'value of WTMPX_FILENAME')
+  path_wtmp = result.stdout().strip()
+
   config_h.set('PATH_WTMP', 'WTMPX_FILENAME')
 elif cc.has_header_symbol('paths.h', '_PATH_WTMPX')
+  code = '''#include <paths.h>
+  int main (int argc, char **argv) {
+    printf ("%s\n", _PATH_WTMPX);
+    return 0;
+  }
+  '''
+  result = cc.run(code, name : 'value of _PATH_WTMPX')
+  path_wtmp = result.stdout().strip()
+
   config_h.set('PATH_WTMP', '_PATH_WTMPX')
 else
-  assert(run_command('test', '-e', '/var/log/utx.log').returncode() == 0, 'Do not know which filename to watch for wtmp changes')
-  config_h.set_quoted('PATH_WTMP', '/var/log/utx.log')
+  path_wtmp = '/var/log/utx.log'
+  assert(run_command('test', '-e', path_wtmp).returncode() == 0, 'Do not know which filename to watch for wtmp changes')
+  config_h.set_quoted('PATH_WTMP', path_wtmp)
 endif
 
 # compiler flags
