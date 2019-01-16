@@ -14,7 +14,11 @@ install_data(
 )
 
 service_conf = configuration_data()
+service_conf.set('datadir', act_datadir)
+service_conf.set('gdm_conf_file', gdm_conf_file)
 service_conf.set('libexecdir', act_libexecdir)
+service_conf.set('localstatedir', act_localstatedir)
+service_conf.set('path_wtmp', path_wtmp)
 
 service = act_namespace + '.service'
 

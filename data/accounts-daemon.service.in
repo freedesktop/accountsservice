@@ -15,6 +15,53 @@ Environment=GVFS_DISABLE_FUSE=1
 Environment=GIO_USE_VFS=local
 Environment=GVFS_REMOTE_VOLUME_MONITOR_IGNORE=1
 
+StateDirectory=AccountsService
+StateDirectoryMode=0775
+
+ProtectSystem=strict
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+# Write access is needed to create home directories:
+ProtectHome=false
+PrivateTmp=true
+PrivateNetwork=true
+# We need access to the canonical user database:
+PrivateUsers=false
+# For D-Bus:
+RestrictAddressFamilies=AF_UNIX
+SystemCallArchitectures=native
+SystemCallFilter=~@mount
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictRealtime=true
+RemoveIPC=true
+
+# In addition to the below paths,
+#  - @localstatedir@/lib/AccountsService/users/ and
+#  - @localstatedir@/lib/AccountsService/icons/
+# are read/written by the daemon. See StateDirectory= above.
+#
+# The paths in /etc are not directly modified by AccountsService, but by
+# usermod, which it spawns.
+#
+# The paths in /var/log and /var/mail are touched by useradd/userdel when adding
+# or deleting users.
+ReadWritePaths=\
+  -@gdm_conf_file@ \
+  /etc/ \
+  -/proc/self/loginuid \
+  -/var/log/lastlog \
+  -/var/log/tallylog \
+  -/var/mail/
+ReadOnlyPaths=\
+  @datadir@/accountsservice/interfaces/ \
+  @datadir@/dbus-1/interfaces/ \
+  @path_wtmp@ \
+  /run/systemd/seats/
+
 [Install]
 # We pull this in by graphical.target instead of waiting for the bus
 # activation, to speed things up a little: gdm uses this anyway so it is nice
