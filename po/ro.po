@@ -1,60 +1,75 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# 
-# Translators:
+# Romanian translation for accountsservice.
+# Copyright (C) 2011 accountsservice's COPYRIGHT HOLDER
+# This file is distributed under the same license as the accountsservice package.
+# uara <rov_93@yahoo.com>, 2011.
+# Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>, 2014, 2015, 2016, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: http://bugs.freedesktop.org/\n"
-"POT-Creation-Date: 2011-03-17 14:45-0400\n"
-"PO-Revision-Date: 2011-03-17 18:52+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Romanian (http://www.transifex.com/projects/p/freedesktop/language/ro/)\n"
+"Project-Id-Version: accountsservice master\n"
+"Report-Msgid-Bugs-To: https://gitlab.freedesktop.org/accountsservice/"
+"accountsservice/issues\n"
+"POT-Creation-Date: 2018-09-06 20:33+0000\n"
+"PO-Revision-Date: 2019-02-12 08:08+0100\n"
+"Last-Translator: Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>\n"
+"Language-Team: Gnome Romanian Translation Team\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
-"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2);;\n"
+"X-Generator: Poedit 2.2.1\n"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:1
+#: data/org.freedesktop.accounts.policy.in:11
+msgid "Change your own user data"
+msgstr "Schimbă datele de utilizator"
+
+#: data/org.freedesktop.accounts.policy.in:12
+msgid "Authentication is required to change your own user data"
+msgstr "Autentificarea este necesară pentru a vă schimba datele de utilizator"
+
+#: data/org.freedesktop.accounts.policy.in:21
+msgid "Change your own user password"
+msgstr "Schimbați-vă parola de utilizator"
+
+#: data/org.freedesktop.accounts.policy.in:22
+msgid "Authentication is required to change your own user password"
+msgstr "Autentificarea este necesară pentru a vă schimba parola de utilizator"
+
+#: data/org.freedesktop.accounts.policy.in:31
+msgid "Manage user accounts"
+msgstr "Administrează conturile de utilizator"
+
+#: data/org.freedesktop.accounts.policy.in:32
+msgid "Authentication is required to change user data"
+msgstr "Autentificarea este necesară pentru a schimba datele de utilizator"
+
+#: data/org.freedesktop.accounts.policy.in:41
+msgid "Change the login screen configuration"
+msgstr "Schimbă configurarea ecranului de autentificare"
+
+#: data/org.freedesktop.accounts.policy.in:42
 msgid "Authentication is required to change the login screen configuration"
 msgstr ""
+"Autentificarea este necesară pentru a schimba configurația ecranului de "
+"autentificare"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:2
-msgid "Authentication is required to change user data"
-msgstr ""
-
-#: ../data/org.freedesktop.accounts.policy.in.h:3
-msgid "Authentication is required to change your own user data"
-msgstr ""
-
-#: ../data/org.freedesktop.accounts.policy.in.h:4
-msgid "Change the login screen configuration"
-msgstr ""
-
-#: ../data/org.freedesktop.accounts.policy.in.h:5
-msgid "Change your own user data"
-msgstr ""
-
-#: ../data/org.freedesktop.accounts.policy.in.h:6
-msgid "Manage user accounts"
-msgstr ""
-
-#: ../src/main.c:141
+#: src/main.c:150
 msgid "Output version information and exit"
-msgstr ""
+msgstr "Afișează informații despre versiune și ieși"
 
-#: ../src/main.c:142
+#: src/main.c:151
 msgid "Replace existing instance"
-msgstr ""
+msgstr "Înlocuiește instanța existentă"
 
-#: ../src/main.c:143
+#: src/main.c:152
 msgid "Enable debugging code"
-msgstr ""
+msgstr "Activează codul de depanare"
 
-#: ../src/main.c:163
+#: src/main.c:171
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
 msgstr ""
+"Asigură interfețe D-Bus pentru interogarea și manipularea\n"
+"informațiilor contului de utilizator."
