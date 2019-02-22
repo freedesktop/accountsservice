@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Pedro Albuquerque <pmra@gmx.com>, 2015,2018
+msgid ""
+msgstr ""
+"Project-Id-Version: accounts service\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 09:48-0500\n"
+"PO-Revision-Date: 2019-02-22 14:19+0000\n"
+"Last-Translator: Pedro Albuquerque <pmra@gmx.com>\n"
+"Language-Team: Portuguese (http://www.transifex.com/freedesktop/accountsservice/language/pt/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:1
+msgid "Change your own user data"
+msgstr "Alterar os seus próprios dados"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:2
+msgid "Authentication is required to change your own user data"
+msgstr "É necessária autenticação para alterar os seus próprios dados de utilizador"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:3
+msgid "Manage user accounts"
+msgstr "Gerir contas de utilizador"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:4
+msgid "Authentication is required to change user data"
+msgstr "É necessária autenticação para alterar dados de utilizador"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:5
+msgid "Change the login screen configuration"
+msgstr "Alterar a configuração do ecrã de início de sessão"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:6
+msgid "Authentication is required to change the login screen configuration"
+msgstr "É necessária autenticação para alterar a configuração do ecrã de início de sessão"
+
+#: ../src/main.c:127
+msgid "Output version information and exit"
+msgstr "Mostrar informação da versão e sair"
+
+#: ../src/main.c:128
+msgid "Replace existing instance"
+msgstr "Substituir instância existente"
+
+#: ../src/main.c:129
+msgid "Enable debugging code"
+msgstr "Activar código de depuração"
+
+#: ../src/main.c:149
+msgid ""
+"Provides D-Bus interfaces for querying and manipulating\n"
+"user account information."
+msgstr "Fornece ambiente D-Bus para consulta e manipulação\nde informação de conta de utilizador."

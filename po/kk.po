@@ -3,58 +3,59 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Baurzhan Muftakhidinov <baurthefirst@gmail.com>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: http://bugs.freedesktop.org/\n"
-"POT-Creation-Date: 2011-03-17 14:45-0400\n"
-"PO-Revision-Date: 2011-03-17 18:52+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Kazakh (http://www.transifex.com/projects/p/freedesktop/language/kk/)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 09:48-0500\n"
+"PO-Revision-Date: 2019-02-22 14:19+0000\n"
+"Last-Translator: halfline <halfline@gmail.com>\n"
+"Language-Team: Kazakh (http://www.transifex.com/freedesktop/accountsservice/language/kk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: kk\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:1
-msgid "Authentication is required to change the login screen configuration"
-msgstr ""
+msgid "Change your own user data"
+msgstr "Өзіңіздің пайдаланушы ақпаратыңызды өзгерту"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:2
-msgid "Authentication is required to change user data"
-msgstr ""
+msgid "Authentication is required to change your own user data"
+msgstr "Өзіңіздің пайдаланушы ақпаратыңызды өзгерту үшін аутентификация керек"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:3
-msgid "Authentication is required to change your own user data"
-msgstr ""
+msgid "Manage user accounts"
+msgstr "Пайдаланушылар тіркелгілерін басқару"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:4
-msgid "Change the login screen configuration"
-msgstr ""
+msgid "Authentication is required to change user data"
+msgstr "Пайдаланушы ақпаратын өзгерту үшін аутентификация керек"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:5
-msgid "Change your own user data"
-msgstr ""
+msgid "Change the login screen configuration"
+msgstr "Жүйеге кіру экранның баптауларын өзгерту"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:6
-msgid "Manage user accounts"
-msgstr ""
+msgid "Authentication is required to change the login screen configuration"
+msgstr "Жүйеге кіру экранның баптауларын өзгерту үшін аутентификация керек"
 
-#: ../src/main.c:141
+#: ../src/main.c:127
 msgid "Output version information and exit"
-msgstr ""
+msgstr "Нұсқа ақпаратын шығару мен шығу"
 
-#: ../src/main.c:142
+#: ../src/main.c:128
 msgid "Replace existing instance"
-msgstr ""
+msgstr "Бар болып тұрған іске қосулы нұсқасын алмастыру"
 
-#: ../src/main.c:143
+#: ../src/main.c:129
 msgid "Enable debugging code"
-msgstr ""
+msgstr "Жөндеу кодтарын іске қосу"
 
-#: ../src/main.c:163
+#: ../src/main.c:149
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
-msgstr ""
+msgstr "Пайдаланушы тіркелгі ақпаратын сұрау мен басқару үшін\nD-Bus интерфейстерін ұсынады."

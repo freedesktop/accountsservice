@@ -3,16 +3,17 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Christian Kirbach <Christian.Kirbach@googlemail.com>, 2011.
-# Mario Blättermann <mariobl@freenet.de>, 2011.
+# Christian Kirbach <Christian.Kirbach@googlemail.com>, 2011
+# Ettore Atalan <atalanttore@googlemail.com>, 2014
+# Mario Blättermann <mariobl@freenet.de>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: http://bugs.freedesktop.org/\n"
-"POT-Creation-Date: 2011-03-17 14:45-0400\n"
-"PO-Revision-Date: 2012-02-14 08:39+0000\n"
-"Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/freedesktop/language/de/)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 09:48-0500\n"
+"PO-Revision-Date: 2019-02-22 14:19+0000\n"
+"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
+"Language-Team: German (http://www.transifex.com/freedesktop/accountsservice/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,42 +21,42 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:1
-msgid "Authentication is required to change the login screen configuration"
-msgstr "Zur Änderung der Konfiguration des Anmeldebildschirms ist eine Legitimierung erforderlich"
+msgid "Change your own user data"
+msgstr "Ändern Sie Ihre eigenen Benutzerdaten"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:2
-msgid "Authentication is required to change user data"
-msgstr "Zur Änderung von Benutzerdaten ist eine Legitimierung erforderlich"
+msgid "Authentication is required to change your own user data"
+msgstr "Zur Änderung Ihrer eigenen Benutzerdaten ist eine Authentifizierung erforderlich"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:3
-msgid "Authentication is required to change your own user data"
-msgstr "Zur Änderung Ihrer eigenen Benutzerdaten ist eine Legitimierung erforderlich"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:4
-msgid "Change the login screen configuration"
-msgstr "Konfiguration des Anmeldebildschirms ändern"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:5
-msgid "Change your own user data"
-msgstr "Ändern Ihrer eigenen Benutzerdaten"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:6
 msgid "Manage user accounts"
 msgstr "Benutzerkonten verwalten"
 
-#: ../src/main.c:141
+#: ../data/org.freedesktop.accounts.policy.in.h:4
+msgid "Authentication is required to change user data"
+msgstr "Zur Änderung von Benutzerdaten ist eine Authentifizierung erforderlich"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:5
+msgid "Change the login screen configuration"
+msgstr "Konfiguration des Anmeldebildschirms ändern"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:6
+msgid "Authentication is required to change the login screen configuration"
+msgstr "Zur Änderung der Konfiguration des Anmeldebildschirms ist eine Authentifizierung erforderlich"
+
+#: ../src/main.c:127
 msgid "Output version information and exit"
 msgstr "Versionsinformationen ausgeben und beenden"
 
-#: ../src/main.c:142
+#: ../src/main.c:128
 msgid "Replace existing instance"
 msgstr "Existierende Instanz ersetzen"
 
-#: ../src/main.c:143
+#: ../src/main.c:129
 msgid "Enable debugging code"
 msgstr "Code zur Fehlerdiagnose aktivieren"
 
-#: ../src/main.c:163
+#: ../src/main.c:149
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."

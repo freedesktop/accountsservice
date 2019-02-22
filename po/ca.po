@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Laura Balbastre <laura.balbastre.soler@gmail.com>, 2011.
+# laura_balbastre <laura.balbastre.soler@gmail.com>, 2011
+# Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: http://bugs.freedesktop.org/\n"
-"POT-Creation-Date: 2011-03-17 14:45-0400\n"
-"PO-Revision-Date: 2012-02-14 08:39+0000\n"
-"Last-Translator: Gil Forcada <gforcada@gnome.org>\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/freedesktop/language/ca/)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 09:48-0500\n"
+"PO-Revision-Date: 2019-02-22 14:19+0000\n"
+"Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
+"Language-Team: Catalan (http://www.transifex.com/freedesktop/accountsservice/language/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,43 +20,43 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:1
-msgid "Authentication is required to change the login screen configuration"
-msgstr "Cal autenticació per canviar la configuració de la pantalla d'entrada"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:2
-msgid "Authentication is required to change user data"
-msgstr "Cal autenticació per canviar les dades d'usuari"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:3
-msgid "Authentication is required to change your own user data"
-msgstr "Cal autenticació per canviar les dades d'usuari pròpies"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:4
-msgid "Change the login screen configuration"
-msgstr "Canvieu la configuració de la pantalla d'entrada"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:5
 msgid "Change your own user data"
 msgstr "Canvieu les dades d'usuari pròpies"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:6
+#: ../data/org.freedesktop.accounts.policy.in.h:2
+msgid "Authentication is required to change your own user data"
+msgstr "Es requereix autenticació per canviar les vostres dades d'usuari"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:3
 msgid "Manage user accounts"
 msgstr "Gestioneu els comptes d'usuari"
 
-#: ../src/main.c:141
+#: ../data/org.freedesktop.accounts.policy.in.h:4
+msgid "Authentication is required to change user data"
+msgstr "Es requereix autenticació per canviar les dades de l'usuari"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:5
+msgid "Change the login screen configuration"
+msgstr "Canvieu la configuració de la pantalla d'inici de sessió"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:6
+msgid "Authentication is required to change the login screen configuration"
+msgstr "Es requereix autenticació per canviar la configuració de la pantalla d'inici de sessió"
+
+#: ../src/main.c:127
 msgid "Output version information and exit"
-msgstr "Mostra la informació sobre la versió i surt"
+msgstr "Mostra la informació de la versió i surt"
 
-#: ../src/main.c:142
+#: ../src/main.c:128
 msgid "Replace existing instance"
-msgstr "Reemplaça una instància existent"
+msgstr "Substitueix una instància existent"
 
-#: ../src/main.c:143
+#: ../src/main.c:129
 msgid "Enable debugging code"
 msgstr "Habilita el codi de depuració"
 
-#: ../src/main.c:163
+#: ../src/main.c:149
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
-msgstr "Ofereix interfícies de D-Bus per realitzar consultes i manipular\nla informació del compte de l'usuari."
+msgstr "Proporciona les interfícies D-Bus per consultar i manipular\nla informació del compte de l'usuari."

@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Richard E. van der Luit <nippur@fedoraproject.org>, 2012.
+# Richard E. van der Luit <nippur@fedoraproject.org>, 2012-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: http://bugs.freedesktop.org/\n"
-"POT-Creation-Date: 2011-03-17 14:45-0400\n"
-"PO-Revision-Date: 2012-02-29 08:54+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 09:48-0500\n"
+"PO-Revision-Date: 2019-02-22 14:19+0000\n"
 "Last-Translator: Richard E. van der Luit <nippur@fedoraproject.org>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/freedesktop/language/nl/)\n"
+"Language-Team: Dutch (http://www.transifex.com/freedesktop/accountsservice/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,43 +19,43 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:1
-msgid "Authentication is required to change the login screen configuration"
-msgstr "Authenticatie vereist om configuratie van loginscherm te kunnen veranderen"
+msgid "Change your own user data"
+msgstr "Uw eigen gebruikersgegevens bewerken"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:2
-msgid "Authentication is required to change user data"
-msgstr "Authenticatie vereist om gebruikersgegevens te kunnen veranderen"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:3
 msgid "Authentication is required to change your own user data"
 msgstr "Authenticatie vereist om uw eigen gebruikersgegevens te kunnen veranderen"
 
+#: ../data/org.freedesktop.accounts.policy.in.h:3
+msgid "Manage user accounts"
+msgstr "Gebruikersaccounts beheren"
+
 #: ../data/org.freedesktop.accounts.policy.in.h:4
-msgid "Change the login screen configuration"
-msgstr "Bewerk configuratie loginscherm"
+msgid "Authentication is required to change user data"
+msgstr "Authenticatie vereist om gebruikersgegevens te kunnen veranderen"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:5
-msgid "Change your own user data"
-msgstr "Bewerk uw eigen gebruikersgegevens"
+msgid "Change the login screen configuration"
+msgstr "Configuratie van loginscherm bewerken"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:6
-msgid "Manage user accounts"
-msgstr "Beheer gebruikersaccounts"
+msgid "Authentication is required to change the login screen configuration"
+msgstr "Authenticatie vereist om configuratie van loginscherm te kunnen veranderen"
 
-#: ../src/main.c:141
+#: ../src/main.c:127
 msgid "Output version information and exit"
 msgstr "Toon versie-informatie en sluit af"
 
-#: ../src/main.c:142
+#: ../src/main.c:128
 msgid "Replace existing instance"
 msgstr "Vervang bestaande databasegegevens"
 
-#: ../src/main.c:143
+#: ../src/main.c:129
 msgid "Enable debugging code"
-msgstr "Schakel debugging code in"
+msgstr "Schakel debuggingcode in"
 
-#: ../src/main.c:163
+#: ../src/main.c:149
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
-msgstr "Biedt D-Bus interfaces om gebruikers accountinformatie\nte bevragen en te bewerken."
+msgstr "Biedt D-Bus-interfaces om gebruikersaccountinformatie\nte bevragen en te bewerken."

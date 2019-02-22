@@ -3,14 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Martijn Dekker <mcdutchie@hotmail.com>, 2013,2015
+# Nik Kalach <nik.kalach@inbox.ru>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: http://bugs.freedesktop.org/\n"
-"POT-Creation-Date: 2011-03-17 14:45-0400\n"
-"PO-Revision-Date: 2011-03-17 18:52+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Interlingua (http://www.transifex.com/projects/p/freedesktop/language/ia/)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 09:48-0500\n"
+"PO-Revision-Date: 2019-02-22 14:19+0000\n"
+"Last-Translator: Martijn Dekker <mcdutchie@hotmail.com>\n"
+"Language-Team: Interlingua (http://www.transifex.com/freedesktop/accountsservice/language/ia/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,43 +20,43 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:1
-msgid "Authentication is required to change the login screen configuration"
-msgstr ""
+msgid "Change your own user data"
+msgstr "Modificar tu proprie datos de usator"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:2
-msgid "Authentication is required to change user data"
-msgstr ""
+msgid "Authentication is required to change your own user data"
+msgstr "Authentication es necessari pro modificar tu proprie datos de usator"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:3
-msgid "Authentication is required to change your own user data"
-msgstr ""
+msgid "Manage user accounts"
+msgstr "Administrar le contos de usatores"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:4
-msgid "Change the login screen configuration"
-msgstr ""
+msgid "Authentication is required to change user data"
+msgstr "Authentication es necessari pro modificar le datos de usator"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:5
-msgid "Change your own user data"
-msgstr ""
+msgid "Change the login screen configuration"
+msgstr "Modificar le configuration del schermo pro aperir session"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:6
-msgid "Manage user accounts"
-msgstr ""
+msgid "Authentication is required to change the login screen configuration"
+msgstr "Authentication es necessari pro modificar le configuration del schermo pro aperir session"
 
-#: ../src/main.c:141
+#: ../src/main.c:127
 msgid "Output version information and exit"
-msgstr ""
+msgstr "Monstrar information super le version e exir"
 
-#: ../src/main.c:142
+#: ../src/main.c:128
 msgid "Replace existing instance"
-msgstr ""
+msgstr "Reimplaciar le instantia existente"
 
-#: ../src/main.c:143
+#: ../src/main.c:129
 msgid "Enable debugging code"
-msgstr ""
+msgstr "Activar le codice de debugging"
 
-#: ../src/main.c:163
+#: ../src/main.c:149
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
-msgstr ""
+msgstr "Provide le interfacies D-Bus pro consultar e manipular\ninformation super le contos de usatores."

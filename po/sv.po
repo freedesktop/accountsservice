@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Daniel Nylander <po@danielnylander.se>, 2011.
+# Anders Jonsson <transifex@norsjovallen.se>, 2018
+# Daniel Nylander <po@danielnylander.se>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: http://bugs.freedesktop.org/\n"
-"POT-Creation-Date: 2011-03-17 14:45-0400\n"
-"PO-Revision-Date: 2012-02-14 08:39+0000\n"
-"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
-"Language-Team: Swedish (http://www.transifex.com/projects/p/freedesktop/language/sv/)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 09:48-0500\n"
+"PO-Revision-Date: 2019-02-22 14:19+0000\n"
+"Last-Translator: Anders Jonsson <transifex@norsjovallen.se>\n"
+"Language-Team: Swedish (http://www.transifex.com/freedesktop/accountsservice/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,43 +20,43 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:1
-msgid "Authentication is required to change the login screen configuration"
-msgstr "Autentisering krävs för att ändra konfigurationen för inloggningsskärmen"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:2
-msgid "Authentication is required to change user data"
-msgstr "Autentisering krävs för att ändra användardata"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:3
-msgid "Authentication is required to change your own user data"
-msgstr "Autentisering krävs för att ändra ditt egna användardata"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:4
-msgid "Change the login screen configuration"
-msgstr "Ändra konfigurationen för inloggningsskärmen"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:5
 msgid "Change your own user data"
 msgstr "Ändra ditt egna användardata"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:6
+#: ../data/org.freedesktop.accounts.policy.in.h:2
+msgid "Authentication is required to change your own user data"
+msgstr "Autentisering krävs för att ändra ditt egna användardata"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:3
 msgid "Manage user accounts"
 msgstr "Hantera användarkonton"
 
-#: ../src/main.c:141
+#: ../data/org.freedesktop.accounts.policy.in.h:4
+msgid "Authentication is required to change user data"
+msgstr "Autentisering krävs för att ändra användardata"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:5
+msgid "Change the login screen configuration"
+msgstr "Ändra konfigurationen för inloggningsskärmen"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:6
+msgid "Authentication is required to change the login screen configuration"
+msgstr "Autentisering krävs för att ändra konfigurationen för inloggningsskärmen"
+
+#: ../src/main.c:127
 msgid "Output version information and exit"
 msgstr "Skriv ut versionsinformation och avsluta"
 
-#: ../src/main.c:142
+#: ../src/main.c:128
 msgid "Replace existing instance"
 msgstr "Ersätt befintlig instans"
 
-#: ../src/main.c:143
+#: ../src/main.c:129
 msgid "Enable debugging code"
 msgstr "Aktivera felsökningskod"
 
-#: ../src/main.c:163
+#: ../src/main.c:149
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
-msgstr "Tillhandahåller D-Bus-gränssnitt för frågor och ändra information för användarkonton."
+msgstr "Tillhandahåller D-Bus-gränssnitt för frågor och\nändring av information för användarkonton."

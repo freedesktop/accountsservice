@@ -3,14 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Miloš Popović <gpopac@gmail.com>, 2016
+# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: http://bugs.freedesktop.org/\n"
-"POT-Creation-Date: 2011-03-17 14:45-0400\n"
-"PO-Revision-Date: 2011-03-17 18:52+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Serbian (Latin) (http://www.transifex.com/projects/p/freedesktop/language/sr@latin/)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 09:48-0500\n"
+"PO-Revision-Date: 2019-02-22 14:19+0000\n"
+"Last-Translator: Miloš Popović <gpopac@gmail.com>\n"
+"Language-Team: Serbian (Latin) (http://www.transifex.com/freedesktop/accountsservice/language/sr%40latin/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,43 +20,43 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:1
-msgid "Authentication is required to change the login screen configuration"
-msgstr ""
+msgid "Change your own user data"
+msgstr "Izmenite vaše lične korisničke podatke"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:2
-msgid "Authentication is required to change user data"
-msgstr ""
+msgid "Authentication is required to change your own user data"
+msgstr "Potrebno je potvrđivanje identiteta za promenu vaših ličnih korisničkih podataka"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:3
-msgid "Authentication is required to change your own user data"
-msgstr ""
+msgid "Manage user accounts"
+msgstr "Upravljaj korisničkim nalozima"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:4
-msgid "Change the login screen configuration"
-msgstr ""
+msgid "Authentication is required to change user data"
+msgstr "Potrebno je potvrđivanje identiteta za promenu korisničkih podataka"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:5
-msgid "Change your own user data"
-msgstr ""
+msgid "Change the login screen configuration"
+msgstr "Izmenite podešavanja ekrana za prijavljivanje"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:6
-msgid "Manage user accounts"
-msgstr ""
+msgid "Authentication is required to change the login screen configuration"
+msgstr "Potrebno je potvrđivanje identiteta za promenu podešavanja ekrana za prijavljivanje"
 
-#: ../src/main.c:141
+#: ../src/main.c:127
 msgid "Output version information and exit"
-msgstr ""
+msgstr "Ispisuje informaciju o izdanju i izlazi"
 
-#: ../src/main.c:142
+#: ../src/main.c:128
 msgid "Replace existing instance"
-msgstr ""
+msgstr "Zamenjuje postojeći primerak"
 
-#: ../src/main.c:143
+#: ../src/main.c:129
 msgid "Enable debugging code"
-msgstr ""
+msgstr "Uključuje kôd za uklanjanje grešaka"
 
-#: ../src/main.c:163
+#: ../src/main.c:149
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
-msgstr ""
+msgstr "Obezbeđuje D-Bas sučelje za slanje upita i upravljanje \npodacima o korisničkom nalogu."

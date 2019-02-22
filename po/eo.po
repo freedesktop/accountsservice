@@ -3,16 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-#   <kristjan.schmidt@googlemail.com>, 2011.
-# Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>, 2011.
+#   <kristjan.schmidt@googlemail.com>, 2011
+# Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: http://bugs.freedesktop.org/\n"
-"POT-Creation-Date: 2011-03-17 14:45-0400\n"
-"PO-Revision-Date: 2012-02-14 08:39+0000\n"
-"Last-Translator: kristjan <kristjan.schmidt@googlemail.com>\n"
-"Language-Team: Esperanto (http://www.transifex.com/projects/p/freedesktop/language/eo/)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 09:48-0500\n"
+"PO-Revision-Date: 2019-02-22 14:19+0000\n"
+"Last-Translator: halfline <halfline@gmail.com>\n"
+"Language-Team: Esperanto (http://www.transifex.com/freedesktop/accountsservice/language/eo/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,42 +20,42 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:1
-msgid "Authentication is required to change the login screen configuration"
-msgstr "Aŭtentigo bezonatas por ŝanĝi la agordojn de la ensalutekrano"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:2
-msgid "Authentication is required to change user data"
-msgstr "Aŭtentigo bezonatas por ŝanĝi uzantodatumojn"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:3
-msgid "Authentication is required to change your own user data"
-msgstr "Aŭtentigo bezonatas por ŝanĝi viajn proprajn uzantodatumojn"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:4
-msgid "Change the login screen configuration"
-msgstr "Ŝanĝi la agordojn de la ensalutekrano"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:5
 msgid "Change your own user data"
 msgstr "Ŝanĝi viajn proprajn uzantodatumojn"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:6
+#: ../data/org.freedesktop.accounts.policy.in.h:2
+msgid "Authentication is required to change your own user data"
+msgstr "Aŭtentigo bezonatas por ŝanĝi viajn proprajn uzantodatumojn"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:3
 msgid "Manage user accounts"
 msgstr "Administri uzantokontojn"
 
-#: ../src/main.c:141
+#: ../data/org.freedesktop.accounts.policy.in.h:4
+msgid "Authentication is required to change user data"
+msgstr "Aŭtentigo bezonatas por ŝanĝi uzantodatumojn"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:5
+msgid "Change the login screen configuration"
+msgstr "Ŝanĝi la agordojn de la ensalutekrano"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:6
+msgid "Authentication is required to change the login screen configuration"
+msgstr "Aŭtentigo bezonatas por ŝanĝi la agordojn de la ensalutekrano"
+
+#: ../src/main.c:127
 msgid "Output version information and exit"
 msgstr "Eligi versioinformon kaj eliri"
 
-#: ../src/main.c:142
+#: ../src/main.c:128
 msgid "Replace existing instance"
 msgstr "Anstataŭigi ekzistantan instancon"
 
-#: ../src/main.c:143
+#: ../src/main.c:129
 msgid "Enable debugging code"
 msgstr "Enŝalti sencimigan kodon"
 
-#: ../src/main.c:163
+#: ../src/main.c:149
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."

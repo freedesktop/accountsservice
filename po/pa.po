@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# A S Alam <apreet.alam@gmail.com>, 2011.
+# A S Alam <alam.yellow@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: http://bugs.freedesktop.org/\n"
-"POT-Creation-Date: 2011-03-17 14:45-0400\n"
-"PO-Revision-Date: 2012-02-14 08:39+0000\n"
-"Last-Translator: A S Alam <apreet.alam@gmail.com>\n"
-"Language-Team: Panjabi (Punjabi) (http://www.transifex.com/projects/p/freedesktop/language/pa/)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-17 09:48-0500\n"
+"PO-Revision-Date: 2019-02-22 14:19+0000\n"
+"Last-Translator: halfline <halfline@gmail.com>\n"
+"Language-Team: Panjabi (Punjabi) (http://www.transifex.com/freedesktop/accountsservice/language/pa/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,42 +19,42 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.freedesktop.accounts.policy.in.h:1
-msgid "Authentication is required to change the login screen configuration"
-msgstr "ਲਾਗਇਨ ਸਕਰੀਨ ਸੰਰਚਨਾ ਬਦਲਣ ਲਈ ਪਰਮਾਣਿਤ ਹੋਣ ਦੀ ਲੋੜ ਹੈ"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:2
-msgid "Authentication is required to change user data"
-msgstr "ਯੂਜ਼ਰ ਡਾਟਾ ਬਦਲਣ ਲਈ ਪਰਮਾਣਿਤ ਹੋਣ ਦੀ ਲੋੜ ਹੈ"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:3
-msgid "Authentication is required to change your own user data"
-msgstr "ਤੁਹਾਡਾ ਯੂਜ਼ਰ ਡਾਟਾ ਬਦਲਣ ਲਈ ਪਰਮਾਣਿਤ ਹੋਣ ਦੀ ਲੋੜ ਹੈ"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:4
-msgid "Change the login screen configuration"
-msgstr "ਲਾਗਇਨ ਸਕਰੀਨ ਸੰਰਚਨਾ ਬਦਲੋ"
-
-#: ../data/org.freedesktop.accounts.policy.in.h:5
 msgid "Change your own user data"
 msgstr "ਆਪਣਾ ਯੂਜ਼ਰ ਡਾਟਾ ਬਦਲੋ"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:6
+#: ../data/org.freedesktop.accounts.policy.in.h:2
+msgid "Authentication is required to change your own user data"
+msgstr "ਤੁਹਾਡਾ ਯੂਜ਼ਰ ਡਾਟਾ ਬਦਲਣ ਲਈ ਪਰਮਾਣਿਤ ਹੋਣ ਦੀ ਲੋੜ ਹੈ"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:3
 msgid "Manage user accounts"
 msgstr "ਯੂਜ਼ਰ ਅਕਾਊਂਟ ਪਰਬੰਧ"
 
-#: ../src/main.c:141
+#: ../data/org.freedesktop.accounts.policy.in.h:4
+msgid "Authentication is required to change user data"
+msgstr "ਯੂਜ਼ਰ ਡਾਟਾ ਬਦਲਣ ਲਈ ਪਰਮਾਣਿਤ ਹੋਣ ਦੀ ਲੋੜ ਹੈ"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:5
+msgid "Change the login screen configuration"
+msgstr "ਲਾਗਇਨ ਸਕਰੀਨ ਸੰਰਚਨਾ ਬਦਲੋ"
+
+#: ../data/org.freedesktop.accounts.policy.in.h:6
+msgid "Authentication is required to change the login screen configuration"
+msgstr "ਲਾਗਇਨ ਸਕਰੀਨ ਸੰਰਚਨਾ ਬਦਲਣ ਲਈ ਪਰਮਾਣਿਤ ਹੋਣ ਦੀ ਲੋੜ ਹੈ"
+
+#: ../src/main.c:127
 msgid "Output version information and exit"
 msgstr "ਵਰਜਨ ਜਾਣਕਾਰੀ ਦਿਉ ਅਤੇ ਬੰਦ ਕਰੋ"
 
-#: ../src/main.c:142
+#: ../src/main.c:128
 msgid "Replace existing instance"
 msgstr "ਮੌਜੂਦਗੀਆਂ ਬਦਲੋ"
 
-#: ../src/main.c:143
+#: ../src/main.c:129
 msgid "Enable debugging code"
 msgstr "ਡੀਬੱਗ ਕੋਡ ਚਾਲੂ"
 
-#: ../src/main.c:163
+#: ../src/main.c:149
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
