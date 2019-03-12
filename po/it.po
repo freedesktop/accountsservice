@@ -1,62 +1,76 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# 
+# accountsservice Italian translation.
+# Copyright (C) 2013, 2019 Free Software Foundation, Inc.
+# This file is distributed under the same license as the accountsservice package.
+#
 # Translators:
 # Luca Ferretti <elle.uca@libero.it>, 2011-2012
-# Milo Casagrande <milo@ubuntu.com>, 2013
+# Milo Casagrande <milo@milo.name>, 2013, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 09:48-0500\n"
-"PO-Revision-Date: 2019-02-22 14:19+0000\n"
-"Last-Translator: halfline <halfline@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/freedesktop/accountsservice/language/it/)\n"
+"Report-Msgid-Bugs-To: https://gitlab.freedesktop.org/accountsservice/"
+"accountsservice/issues\n"
+"POT-Creation-Date: 2019-02-22 16:45+0000\n"
+"PO-Revision-Date: 2019-03-12 14:54+0100\n"
+"Last-Translator: Milo Casagrande <milo@milo.name>\n"
+"Language-Team: Italian <tp@lists.linux.it>Language: it\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2.1\n"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:1
+#: data/org.freedesktop.accounts.policy.in:11
 msgid "Change your own user data"
 msgstr "Cambia i propri dati utente"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:2
+#: data/org.freedesktop.accounts.policy.in:12
 msgid "Authentication is required to change your own user data"
 msgstr "È richiesto autenticarsi per cambiare i propri dati utente"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:3
+#: data/org.freedesktop.accounts.policy.in:21
+msgid "Change your own user password"
+msgstr "Cambia la password personale"
+
+#: data/org.freedesktop.accounts.policy.in:22
+msgid "Authentication is required to change your own user password"
+msgstr "È richiesto autenticarsi per cambiare la propria password personale"
+
+#: data/org.freedesktop.accounts.policy.in:31
 msgid "Manage user accounts"
 msgstr "Gestisci gli account utente"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:4
+#: data/org.freedesktop.accounts.policy.in:32
 msgid "Authentication is required to change user data"
 msgstr "È richiesto autenticarsi per cambiare i dati utente"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:5
+#: data/org.freedesktop.accounts.policy.in:41
 msgid "Change the login screen configuration"
 msgstr "Cambia la configurazione della schermata di accesso"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:6
+#: data/org.freedesktop.accounts.policy.in:42
 msgid "Authentication is required to change the login screen configuration"
-msgstr "È richiesto autenticarsi per cambiare la configurazione della schermata di accesso"
+msgstr ""
+"È richiesto autenticarsi per cambiare la configurazione della schermata di "
+"accesso"
 
-#: ../src/main.c:127
+#: src/main.c:150
 msgid "Output version information and exit"
 msgstr "Stampa le informazioni di versione ed esce"
 
-#: ../src/main.c:128
+#: src/main.c:151
 msgid "Replace existing instance"
 msgstr "Sostituisce l'istanza esistente"
 
-#: ../src/main.c:129
+#: src/main.c:152
 msgid "Enable debugging code"
 msgstr "Abilita il codice di debug"
 
-#: ../src/main.c:149
+#: src/main.c:171
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
-msgstr "Fornisce interfacce D-Bus per interrogare e manipolare\nle informazioni degli account utente."
+msgstr ""
+"Fornisce interfacce D-Bus per interrogare e manipolare\n"
+"le informazioni degli account utente."
