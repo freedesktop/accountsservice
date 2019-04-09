@@ -8,9 +8,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 09:48-0500\n"
-"PO-Revision-Date: 2019-04-08 22:47+0300\n"
+"Report-Msgid-Bugs-To: https://gitlab.freedesktop.org/accountsservice/"
+"accountsservice/issues\n"
+"POT-Creation-Date: 2019-04-09 15:24+0000\n"
+"PO-Revision-Date: 2019-04-09 22:04+0300\n"
 "Last-Translator: aurisc4 <aurisc4@gmail.com>\n"
 "Language-Team: Lithuanian (http://www.transifex.com/freedesktop/"
 "accountsservice/language/lt/)\n"
@@ -23,44 +24,52 @@ msgstr ""
 "1 : n % 1 != 0 ? 2: 3);\n"
 "X-Generator: Poedit 2.2.1\n"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:1
+#: data/org.freedesktop.accounts.policy.in:11
 msgid "Change your own user data"
 msgstr "Keisti savo naudotojo duomenis"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:2
+#: data/org.freedesktop.accounts.policy.in:12
 msgid "Authentication is required to change your own user data"
 msgstr "Norint keisti savo naudotojo duomenis, reikia patvirtinti tapatybę"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:3
+#: data/org.freedesktop.accounts.policy.in:21
+msgid "Change your own user password"
+msgstr "Keisti savo naudotojo slaptažodį"
+
+#: data/org.freedesktop.accounts.policy.in:22
+msgid "Authentication is required to change your own user password"
+msgstr "Norint keisti savo naudotojo slaptažodį, reikia patvirtinti tapatybę"
+
+#: data/org.freedesktop.accounts.policy.in:31
 msgid "Manage user accounts"
 msgstr "Tvarkyti naudotojų paskyras"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:4
+#: data/org.freedesktop.accounts.policy.in:32
 msgid "Authentication is required to change user data"
 msgstr "Norint keisti naudotojų duomenis, reikia patvirtinti tapatybę"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:5
+#: data/org.freedesktop.accounts.policy.in:41
 msgid "Change the login screen configuration"
 msgstr "Keisti prisijungimo ekrano konfigūraciją"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:6
+#: data/org.freedesktop.accounts.policy.in:42
 msgid "Authentication is required to change the login screen configuration"
 msgstr ""
 "Norint keisti prisijungimo ekrano konfigūraciją, reikia patvirtinti tapatybę"
 
-#: ../src/main.c:127
+#: src/main.c:201
 msgid "Output version information and exit"
 msgstr "Parodyti informaciją apie versiją ir išeiti"
 
-#: ../src/main.c:128
+#: src/main.c:202
 msgid "Replace existing instance"
 msgstr "Pakeisti esamą egzempliorių"
 
-#: ../src/main.c:129
+#: src/main.c:203
 msgid "Enable debugging code"
 msgstr "Įjungti derinimo kodą"
 
-#: ../src/main.c:149
+#: src/main.c:222
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
