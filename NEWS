@@ -1,3 +1,13 @@
+Changes in 0.6.55
+=================
+* Memory leak fix
+* improved heuristics for identifying user session
+* Export interfaces directory to pkgconfig
+* Lock down state directory from prying eyes to be more friendly to
+  accountsservice extensions that require privacy.
+* misc fixes
+* Translation updateso
+
 Changes in 0.6.54
 =================
 * Fix user state dirs
