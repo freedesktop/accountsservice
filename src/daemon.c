@@ -485,7 +485,7 @@ reload_users (Daemon *daemon)
         load_entries (daemon, users, TRUE, entry_generator_requested_users);
 
         /* Now add/update users from other sources, possibly non-local */
-        load_entries (daemon, users, FALSE, entry_generator_cachedir);
+        load_entries (daemon, users, TRUE, entry_generator_cachedir);
 
         wtmp_helper_update_login_frequencies (users);
 
