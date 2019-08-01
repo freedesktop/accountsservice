@@ -146,7 +146,11 @@ polkit_gobject_dep = dependency('polkit-gobject-1')
 crypt_dep = cc.find_library('crypt')
 
 dbus_dep = dependency('dbus-1')
-dbus_conf_dir = join_paths(dbus_dep.get_pkgconfig_variable('sysconfdir', define_variable: ['sysconfdir', act_sysconfdir]), 'dbus-1', 'system.d')
+if dbus_dep.version().version_compare('>=1.9.18')
+  dbus_conf_dir = join_paths(dbus_dep.get_pkgconfig_variable('datadir', define_variable: ['datadir', act_datadir]), 'dbus-1', 'system.d')
+else
+  dbus_conf_dir = join_paths(dbus_dep.get_pkgconfig_variable('sysconfdir', define_variable: ['sysconfdir', act_sysconfdir]), 'dbus-1', 'system.d')
+endif
 dbus_ifaces_dir = dbus_dep.get_pkgconfig_variable('interfaces_dir', define_variable: ['datadir', act_datadir])
 dbus_sys_dir = dbus_dep.get_pkgconfig_variable('system_bus_services_dir', define_variable: ['datadir', act_datadir])
 
