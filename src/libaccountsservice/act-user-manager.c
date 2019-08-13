@@ -497,7 +497,7 @@ _can_activate_systemd_sessions (ActUserManager *manager)
 }
 #endif
 
-gboolean
+static gboolean
 _can_activate_console_kit_sessions (ActUserManager *manager)
 {
         ActUserManagerPrivate *priv = act_user_manager_get_instance_private (manager);
