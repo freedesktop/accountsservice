@@ -15,30 +15,6 @@
 *.vapi
 *~
 
-.deps
-.libs
-compile
-Makefile
-Makefile.in
-
-/aclocal.m4
-/autom4te.cache
-/config.guess
-/config.h
-/config.h.in
-/config.log
-/config.status
-/config.sub
-/configure
-/depcomp
-/gtk-doc.m4
-/gtk-doc.make
-/install-sh
-/libtool
-/ltmain.sh
-/missing
-/stamp-h1
-
 /data/accounts-daemon.service
 /data/org.freedesktop.Accounts.service
 /data/org.freedesktop.accounts.policy
@@ -57,16 +33,5 @@ Makefile.in
 /doc/libaccountsservice/*.interfaces
 /doc/libaccountsservice/*.prerequisites
 /doc/libaccountsservice/*.signals
-
-/m4/libtool.m4
-/m4/ltoptions.m4
-/m4/ltsugar.m4
-/m4/ltversion.m4
-/m4/lt~obsolete.m4
-
-/po/stamp-it
-/po/POTFILES
-/po/Makefile.in.in
-/po/.intltool-merge-cache
 
 /src/accounts-daemon
