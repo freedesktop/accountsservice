@@ -1,0 +1,2 @@
+# List of source files that should *not* be translated.
+data/accounts-daemon.service.in
