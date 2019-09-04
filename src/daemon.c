@@ -1522,13 +1522,18 @@ save_autologin (Daemon      *daemon,
         g_autoptr(GKeyFile) keyfile = NULL;
         g_autofree gchar *data = NULL;
         gboolean result;
+        g_autoptr(GError) local_error = NULL;
 
         keyfile = g_key_file_new ();
         if (!g_key_file_load_from_file (keyfile,
                                         PATH_GDM_CUSTOM,
                                         G_KEY_FILE_KEEP_COMMENTS,
                                         error)) {
-                return FALSE;
+                /* It's OK for custom.conf to not exist, we will make it */
+                if (!g_error_matches (local_error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+                        g_propagate_error (error, g_steal_pointer (&local_error));
+                        return FALSE;
+                }
         }
 
         g_key_file_set_string (keyfile, "daemon", "AutomaticLoginEnable", enabled ? "True" : "False");
