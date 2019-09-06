@@ -194,18 +194,11 @@ config_h.set('MINIMUM_UID', get_option('minimum_uid'))
 gdm_conf_file = get_option('gdmconffile')
 config_h.set_quoted('PATH_GDM_CUSTOM', gdm_conf_file)
 
-enable_systemd = get_option('systemd')
-enable_elogind = get_option('elogind')
-assert(not enable_systemd or not enable_elogind, 'systemd and elogind support requested, please choose only one.')
-
-if enable_systemd
+if get_option('elogind')
+  logind_dep = dependency('libelogind', version: '>= 229.4')
+else
   logind_dep = dependency('libsystemd', version: '>= 186')
 endif
-
-if enable_elogind
-  logind_dep = dependency('libelogind', version: '>= 229.4')
-endif
-config_h.set('WITH_SYSTEMD', enable_systemd or enable_elogind)
 
 subdir('data')
 subdir('src')

@@ -28,44 +28,20 @@ enum_sources = gnome.mkenums(
   install_dir: join_paths(act_pkgincludedir, subdir),
 )
 
-dbus_sources = []
-
-ifaces = [
-  'Manager',
-  'Seat',
-  'Session',
-]
-
-namespace = 'ConsoleKit'
-prefix = 'org.freedesktop.' + namespace
-
-foreach iface: ifaces
-  dbus_sources += gnome.gdbus_codegen(
-    'ck-@0@-generated'.format(iface.to_lower()),
-    '@0@.@1@.xml'.format(prefix, iface),
-    interface_prefix: prefix,
-    namespace: namespace,
-    extra_args: ['--glib-min-required', '2.64'],
-  )
-endforeach
-
 deps = [
   crypt_dep,
   gio_unix_dep,
   glib_dep,
   libaccounts_generated_dep,
+  logind_dep,
 ]
 
 symbol_map = join_paths(meson.current_source_dir(), 'symbol.map')
 ldflags = cc.get_supported_link_arguments('-Wl,--version-script,@0@'.format(symbol_map))
 
-if enable_systemd or enable_elogind
-  deps += logind_dep
-endif
-
 libaccountsservice = shared_library(
   act_name,
-  sources: sources + enum_sources + dbus_sources,
+  sources: sources + enum_sources,
   version: libversion,
   include_directories: top_inc,
   dependencies: deps,

@@ -6,7 +6,6 @@ option('user_heuristics', type: 'boolean', value: true, description: 'Enable heu
 option('extra_admin_groups', type: 'array', value: [], description: 'Comma-separated list of extra groups that administrator users are part of')
 option('minimum_uid', type: 'integer', value: 1000, description: 'Set minimum uid for human users')
 
-option('systemd', type: 'boolean', value: false, description: 'Use systemd')
 option('elogind', type: 'boolean', value: false, description: 'Use elogind')
 
 option('introspection', type: 'boolean', value: true, description: 'Enable introspection for this build')
