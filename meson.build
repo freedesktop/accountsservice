@@ -3,7 +3,7 @@ project(
   version: '0.6.55',
   license: 'GPL3+',
   default_options: 'buildtype=debugoptimized',
-  meson_version: '>= 0.46.0',
+  meson_version: '>= 0.50.0',
 )
 
 act_name = meson.project_name()
