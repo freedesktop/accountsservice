@@ -1,7 +1,7 @@
 build-fedora:
   image: fedora:latest
   before_script:
-    - dnf install -y gcc meson ninja-build gobject-introspection-devel glib-devel gtk-doc gettext-devel make polkit-devel redhat-rpm-config systemd-devel dbus-devel
+    - dnf install -y gcc meson ninja-build gobject-introspection-devel glib-devel gtk-doc gettext-devel make polkit-devel redhat-rpm-config systemd-devel dbus-devel vala
   script:
     - meson -Dgtk_doc=true _build
     - ninja -C _build all

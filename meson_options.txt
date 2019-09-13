@@ -10,5 +10,7 @@ option('systemd', type: 'boolean', value: false, description: 'Use systemd')
 option('elogind', type: 'boolean', value: false, description: 'Use elogind')
 
 option('introspection', type: 'boolean', value: true, description: 'Enable introspection for this build')
+option('vapi', type: 'boolean', value: true, description : 'Enable Vala bindings for this build')
+
 option('docbook', type: 'boolean', value: false, description: 'build documentation (requires xmlto)')
 option('gtk_doc', type: 'boolean', value: false, description: 'use gtk-doc to build documentation')

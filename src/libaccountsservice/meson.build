@@ -95,7 +95,7 @@ pkg.generate(
 )
 
 if get_option('introspection')
-  gnome.generate_gir(
+  as_gir_gen_sources = gnome.generate_gir(
     libaccountsservice,
     sources: sources + headers + [enum_sources[1]],
     includes: ['GObject-2.0', 'Gio-2.0'],
@@ -106,4 +106,12 @@ if get_option('introspection')
     header: join_paths(subdir, 'act.h'),
     install: true,
   )
+
+  if get_option('vapi')
+    gnome.generate_vapi(act_name,
+      sources : as_gir_gen_sources[0],
+      packages : 'gio-2.0',
+      install : true,
+    )
+  endif
 endif
