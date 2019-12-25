@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -2075,6 +2076,112 @@ user_set_automatic_login (AccountsUser          *auser,
 }
 
 static void
+user_change_expiration_time_authorized_cb (Daemon                *daemon,
+                                           User                  *user,
+                                           GDBusMethodInvocation *context,
+                                           gpointer               data)
+{
+        time_t timestamp  = (time_t)data;
+        g_autoptr(GError) error = NULL;
+        const gchar *argv[5];
+        struct tm   *t;
+        const gchar *date;
+        
+        t = gmtime(&timestamp);
+        
+        sys_log (context,
+                 "set expiration_time is %d-%d-%d '%s' (%d)",
+                 t->tm_year+1900,
+                 t->tm_mon+1,
+                 t->tm_mday,
+                 accounts_user_get_user_name (ACCOUNTS_USER (user)),
+                 accounts_user_get_uid (ACCOUNTS_USER (user)));
+
+        date = g_strdup_printf ("%d-%d-%d",t->tm_year+1900,t->tm_mon+1,t->tm_mday);
+        argv[0] = "/usr/bin/chage";
+        argv[1] = "-E";
+        argv[2] = date;
+        argv[3] = accounts_user_get_user_name (ACCOUNTS_USER (user));
+        argv[4] = NULL;
+        
+        if (!spawn_with_login_uid (context, argv, &error)) {
+                g_free ((gpointer)date);
+                throw_error (context, ERROR_FAILED, "running '%s' failed: %s", argv[0], error->message);
+                return;
+        }
+        g_free ((gpointer)date);
+        accounts_user_complete_set_user_expiration_time (ACCOUNTS_USER (user), context);
+}
+static gboolean
+user_set_expiration_time (AccountsUser          *auser,
+                          GDBusMethodInvocation *context,
+                          guint64                timestamp)
+{
+        User *user = (User*)auser;
+        
+        daemon_local_check_auth (user->daemon,
+                                 user,
+                                 "org.freedesktop.accounts.user-administration",
+                                 TRUE,
+                                 user_change_expiration_time_authorized_cb,
+                                 context,
+                                 (gpointer)timestamp,
+                                 NULL);
+
+        return TRUE;
+}
+
+static void
+user_change_password_expiration_time_authorized_cb (Daemon                *daemon,
+                                                    User                  *user,
+                                                    GDBusMethodInvocation *context,
+                                                    gpointer               data)
+{
+        guint date = GPOINTER_TO_UINT (data);
+        g_autoptr(GError) error = NULL;
+        const gchar *argv[5];
+        const gchar *strdate;
+
+        sys_log (context,
+                 "change password expiration time %d for user '%s' (%d)",
+                 date,
+                 accounts_user_get_user_name (ACCOUNTS_USER (user)),
+                 accounts_user_get_uid (ACCOUNTS_USER (user)));
+    
+        strdate = g_strdup_printf ("%u",date);
+        argv[0] = "/usr/bin/chage";
+        argv[1] = "-M";
+        argv[2] = strdate;
+        argv[3] = accounts_user_get_user_name (ACCOUNTS_USER (user));
+        argv[4] = NULL;
+        
+        if (!spawn_with_login_uid (context, argv, &error)) {
+                g_free ((gpointer)strdate);
+                throw_error (context, ERROR_FAILED, "running '%s' failed: %s", argv[0], error->message);
+                return;
+        }
+        g_free ((gpointer)strdate);
+        accounts_user_complete_set_password_expiration_time (ACCOUNTS_USER (user), context);
+}
+static gboolean
+user_set_password_expiration_time (AccountsUser          *auser,
+                                   GDBusMethodInvocation *context,
+                                   guint                  date)
+{
+        User *user = (User*)auser;
+        
+        daemon_local_check_auth (user->daemon,
+                                 user,
+                                 "org.freedesktop.accounts.user-administration",
+                                 TRUE,
+                                 user_change_password_expiration_time_authorized_cb,
+                                 context,
+                                 GUINT_TO_POINTER (date),
+                                 NULL);
+
+        return TRUE;
+}
+static void
 user_finalize (GObject *object)
 {
         User *user;
@@ -2125,6 +2232,8 @@ user_accounts_user_iface_init (AccountsUserIface *iface)
         iface->handle_set_session = user_set_session;
         iface->handle_set_session_type = user_set_session_type;
         iface->handle_get_password_expiration_policy = user_get_password_expiration_policy;
+        iface->handle_set_user_expiration_time = user_set_expiration_time;
+        iface->handle_set_password_expiration_time = user_set_password_expiration_time;
 }
 
 static void

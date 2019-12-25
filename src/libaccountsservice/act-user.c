@@ -1762,3 +1762,37 @@ act_user_set_automatic_login (ActUser   *user,
                 g_warning ("SetAutomaticLogin call failed: %s", error->message);
         }
 }
+void
+act_user_set_expiration_time (ActUser   *user,
+                              guint64    timestamps)
+{
+        g_autoptr(GError) error = NULL;
+
+        g_return_if_fail (ACT_IS_USER (user));
+        g_return_if_fail (ACCOUNTS_IS_USER (user->accounts_proxy));
+
+        if (!accounts_user_call_set_user_expiration_time_sync (user->accounts_proxy,
+                                                               timestamps,
+                                                               NULL,
+                                                              &error)) 
+        {
+                g_warning ("Set user expiration time call failed: %s", error->message);
+        }
+}
+void
+act_user_set_password_expiration_time (ActUser   *user,
+                                       guint      day)
+{
+        g_autoptr(GError) error = NULL;
+
+        g_return_if_fail (ACT_IS_USER (user));
+        g_return_if_fail (ACCOUNTS_IS_USER (user->accounts_proxy));
+
+        if (!accounts_user_call_set_password_expiration_time_sync (user->accounts_proxy,
+                                                                   day,
+                                                                   NULL,
+                                                                   &error)) 
+        {
+                g_warning ("Set password expiration time call failed: %s", error->message);
+        }
+}

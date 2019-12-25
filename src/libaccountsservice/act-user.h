@@ -118,15 +118,20 @@ void           act_user_set_account_type          (ActUser    *user,
 void           act_user_set_password              (ActUser     *user,
                                                    const gchar *password,
                                                    const gchar *hint);
-void           act_user_set_password_hint         (ActUser             *user,
+void           act_user_set_password_hint         (ActUser     *user,
                                                    const gchar *hint);
-void           act_user_set_password_mode         (ActUser             *user,
+void           act_user_set_password_mode         (ActUser     *user,
                                                    ActUserPasswordMode  password_mode);
-void           act_user_set_locked                (ActUser    *user,
-                                                   gboolean    locked);
-void           act_user_set_automatic_login       (ActUser   *user,
-                                                   gboolean  enabled);
+void           act_user_set_locked                (ActUser     *user,
+                                                   gboolean     locked);
+void           act_user_set_automatic_login       (ActUser     *user,
+                                                   gboolean     enabled);
 
+void           act_user_set_expiration_time       (ActUser     *user,
+                                                   guint64      timestamps);
+
+void           act_user_set_password_expiration_time (ActUser  *user,
+                                                      guint     day);
 #if GLIB_CHECK_VERSION(2, 44, 0)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (ActUser, g_object_unref)
 #endif

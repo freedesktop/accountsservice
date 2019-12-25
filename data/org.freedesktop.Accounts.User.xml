@@ -661,6 +661,16 @@
     <arg name="days_after_expiration_until_lock" direction="out" type="x"/>
   </method>
 
+  <method name="SetUserExpirationTime">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <arg name="time" direction="in" type="t"/>
+    </method>
+
+  <method name="SetPasswordExpirationTime">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <arg name="time" direction="in" type="u"/>
+    </method>
+
   <property name="Uid" type="t" access="read">
     <doc:doc>
       <doc:description>
