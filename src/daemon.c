@@ -1165,7 +1165,6 @@ daemon_create_user (AccountsAccounts      *accounts,
         daemon_local_check_auth (daemon,
                                  NULL,
                                  "org.freedesktop.accounts.user-administration",
-                                 TRUE,
                                  daemon_create_user_authorized_cb,
                                  context,
                                  data,
@@ -1217,7 +1216,6 @@ daemon_cache_user (AccountsAccounts      *accounts,
         daemon_local_check_auth (daemon,
                                  NULL,
                                  "org.freedesktop.accounts.user-administration",
-                                 TRUE,
                                  daemon_cache_user_authorized_cb,
                                  context,
                                  g_strdup (user_name),
@@ -1267,7 +1265,6 @@ daemon_uncache_user (AccountsAccounts      *accounts,
         daemon_local_check_auth (daemon,
                                  NULL,
                                  "org.freedesktop.accounts.user-administration",
-                                 TRUE,
                                  daemon_uncache_user_authorized_cb,
                                  context,
                                  g_strdup (user_name),
@@ -1363,7 +1360,6 @@ daemon_delete_user (AccountsAccounts      *accounts,
         daemon_local_check_auth (daemon,
                                  NULL,
                                  "org.freedesktop.accounts.user-administration",
-                                 TRUE,
                                  daemon_delete_user_authorized_cb,
                                  context,
                                  data,
@@ -1433,11 +1429,28 @@ check_auth_cb (PolkitAuthority *authority,
         check_auth_data_free (data);
 }
 
+static gboolean
+get_allow_interaction (GDBusMethodInvocation *invocation)
+{
+    /* GLib 2.46 is when G_DBUS_MESSAGE_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION
+     * was first released.
+     */
+#if GLIB_CHECK_VERSION(2, 46, 0)
+    GDBusMessage *message = g_dbus_method_invocation_get_message (invocation);
+    GDBusMessageFlags message_flags = g_dbus_message_get_flags (message);
+    if (message_flags & G_DBUS_MESSAGE_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION)
+        return TRUE;
+    else
+        return FALSE;
+#else
+    return TRUE;
+#endif
+}
+
 void
 daemon_local_check_auth (Daemon                *daemon,
                          User                  *user,
                          const gchar           *action_id,
-                         gboolean               allow_interaction,
                          AuthorizedCallback     authorized_cb,
                          GDBusMethodInvocation *context,
                          gpointer               authorized_cb_data,
@@ -1447,6 +1460,7 @@ daemon_local_check_auth (Daemon                *daemon,
         CheckAuthData *data;
         PolkitSubject *subject;
         PolkitCheckAuthorizationFlags flags;
+        gboolean allow_interaction = get_allow_interaction (context);
 
         data = g_new0 (CheckAuthData, 1);
         data->daemon = g_object_ref (daemon);

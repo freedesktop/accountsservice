@@ -1297,6 +1297,8 @@ act_user_get_password_expiration_policy (ActUser *user,
         g_return_if_fail (ACCOUNTS_IS_USER (user->accounts_proxy));
 
         if (!accounts_user_call_get_password_expiration_policy_sync (user->accounts_proxy,
+                                                                     G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                                     -1,
                                                                      expiration_time,
                                                                      last_change_time,
                                                                      min_days_between_changes,
@@ -1331,6 +1333,8 @@ act_user_set_email (ActUser    *user,
 
         if (!accounts_user_call_set_email_sync (user->accounts_proxy,
                                                 email,
+                                                G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                -1,
                                                 NULL,
                                                 &error)) {
                 g_warning ("SetEmail call failed: %s", error->message);
@@ -1359,6 +1363,8 @@ act_user_set_language (ActUser    *user,
 
         if (!accounts_user_call_set_language_sync (user->accounts_proxy,
                                                    language,
+                                                   G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                   -1,
                                                    NULL,
                                                    &error)) {
                 g_warning ("SetLanguage for language %s failed: %s", language, error->message);
@@ -1387,6 +1393,8 @@ act_user_set_x_session (ActUser    *user,
 
         if (!accounts_user_call_set_xsession_sync (user->accounts_proxy,
                                                    x_session,
+                                                   G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                   -1,
                                                    NULL,
                                                    &error)) {
                 g_warning ("SetXSession call failed: %s", error->message);
@@ -1415,6 +1423,8 @@ act_user_set_session (ActUser    *user,
 
         if (!accounts_user_call_set_session_sync (user->accounts_proxy,
                                                   session,
+                                                  G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                  -1,
                                                   NULL,
                                                   &error)) {
                 g_warning ("SetSession call failed: %s", error->message);
@@ -1443,6 +1453,8 @@ act_user_set_session_type (ActUser    *user,
 
         if (!accounts_user_call_set_session_type_sync (user->accounts_proxy,
                                                        session_type,
+                                                       G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                       -1,
                                                        NULL,
                                                        &error)) {
                 g_warning ("SetSessionType call failed: %s", error->message);
@@ -1471,6 +1483,8 @@ act_user_set_location (ActUser    *user,
 
         if (!accounts_user_call_set_location_sync (user->accounts_proxy,
                                                    location,
+                                                   G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                   -1,
                                                    NULL,
                                                    &error)) {
                 g_warning ("SetLocation call failed: %s", error->message);
@@ -1499,6 +1513,8 @@ act_user_set_user_name (ActUser    *user,
 
         if (!accounts_user_call_set_user_name_sync (user->accounts_proxy,
                                                     user_name,
+                                                    G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                    -1,
                                                     NULL,
                                                     &error)) {
                 g_warning ("SetUserName call failed: %s", error->message);
@@ -1527,6 +1543,8 @@ act_user_set_real_name (ActUser    *user,
 
         if (!accounts_user_call_set_real_name_sync (user->accounts_proxy,
                                                     real_name,
+                                                    G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                    -1,
                                                     NULL,
                                                     &error)) {
                 g_warning ("SetRealName call failed: %s", error->message);
@@ -1555,6 +1573,8 @@ act_user_set_icon_file (ActUser    *user,
 
         if (!accounts_user_call_set_icon_file_sync (user->accounts_proxy,
                                                     icon_file,
+                                                    G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                    -1,
                                                     NULL,
                                                     &error)) {
                 g_warning ("SetIconFile call failed: %s", error->message);
@@ -1581,9 +1601,11 @@ act_user_set_account_type (ActUser            *user,
         g_return_if_fail (ACCOUNTS_IS_USER (user->accounts_proxy));
 
         if (!accounts_user_call_set_account_type_sync (user->accounts_proxy,
-                                                    account_type,
-                                                    NULL,
-                                                    &error)) {
+                                                       account_type,
+                                                       G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                       -1,
+                                                       NULL,
+                                                       &error)) {
                 g_warning ("SetAccountType call failed: %s", error->message);
                 return;
         }
@@ -1646,6 +1668,8 @@ act_user_set_password (ActUser             *user,
         if (!accounts_user_call_set_password_sync (user->accounts_proxy,
                                                    crypted,
                                                    hint,
+                                                   G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                   -1,
                                                    NULL,
                                                    &error)) {
                 g_warning ("SetPassword call failed: %s", error->message);
@@ -1674,6 +1698,8 @@ act_user_set_password_hint (ActUser     *user,
 
         if (!accounts_user_call_set_password_hint_sync (user->accounts_proxy,
                                                         hint,
+                                                        G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                        -1,
                                                         NULL,
                                                         &error)) {
                 g_warning ("SetPasswordHint call failed: %s", error->message);
@@ -1704,6 +1730,8 @@ act_user_set_password_mode (ActUser             *user,
 
         if (!accounts_user_call_set_password_mode_sync (user->accounts_proxy,
                                                         (gint) password_mode,
+                                                        G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                        -1,
                                                         NULL,
                                                         &error)) {
                 g_warning ("SetPasswordMode call failed: %s", error->message);
@@ -1728,6 +1756,8 @@ act_user_set_locked (ActUser  *user,
 
         if (!accounts_user_call_set_locked_sync (user->accounts_proxy,
                                                  locked,
+                                                 G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                 -1,
                                                  NULL,
                                                  &error)) {
                 g_warning ("SetLocked call failed: %s", error->message);
@@ -1757,6 +1787,8 @@ act_user_set_automatic_login (ActUser   *user,
 
         if (!accounts_user_call_set_automatic_login_sync (user->accounts_proxy,
                                                           enabled,
+                                                          G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                          -1,
                                                           NULL,
                                                           &error)) {
                 g_warning ("SetAutomaticLogin call failed: %s", error->message);

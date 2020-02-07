@@ -45,6 +45,7 @@ foreach iface: ifaces
     '@0@.@1@.xml'.format(prefix, iface),
     interface_prefix: prefix,
     namespace: namespace,
+    extra_args: ['--glib-min-required', '2.64'],
   )
 endforeach
 

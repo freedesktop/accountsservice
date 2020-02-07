@@ -13,6 +13,7 @@ foreach iface: ifaces
     join_paths(data_dir, iface[1] + iface[2] + '.xml'),
     interface_prefix: iface[1],
     namespace: 'Accounts',
+    extra_args: ['--glib-min-required', '2.64'],
   )
   sources += gdbus_sources
   gdbus_headers += gdbus_sources[1]

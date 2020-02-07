@@ -1,5 +1,5 @@
 build-fedora:
-  image: fedora:latest
+  image: fedora:rawhide
   before_script:
     - dnf install -y gcc meson ninja-build gobject-introspection-devel glib-devel gtk-doc gettext-devel make polkit-devel redhat-rpm-config systemd-devel dbus-devel vala
   script:

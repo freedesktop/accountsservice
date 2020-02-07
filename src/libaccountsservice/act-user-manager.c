@@ -289,6 +289,8 @@ activate_console_kit_session_id (ActUserManager *manager,
         if (proxy)
                 res = console_kit_seat_call_activate_session_sync (proxy,
                                                                    session_id,
+                                                                   G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                                   -1,
                                                                    NULL,
                                                                    &error);
 
@@ -355,7 +357,12 @@ _ck_session_is_login_window (ActUserManager *manager,
                                                     NULL,
                                                     &error);
         if (proxy)
-                res = console_kit_session_call_get_session_type_sync (proxy, &session_type, NULL, &error);
+                res = console_kit_session_call_get_session_type_sync (proxy,
+                                                                      G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                                      -1,
+                                                                      &session_type,
+                                                                      NULL,
+                                                                      &error);
 
         if (!res) {
                 if (error != NULL) {
@@ -504,7 +511,12 @@ _can_activate_console_kit_sessions (ActUserManager *manager)
         g_autoptr(GError) error = NULL;
         gboolean  can_activate_sessions = FALSE;
 
-        if (!console_kit_seat_call_can_activate_sessions_sync (priv->seat.seat_proxy, &can_activate_sessions, NULL, &error)) {
+        if (!console_kit_seat_call_can_activate_sessions_sync (priv->seat.seat_proxy,
+                                                               G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                               -1,
+                                                               &can_activate_sessions,
+                                                               NULL,
+                                                               &error)) {
                 if (error != NULL) {
                         g_warning ("unable to determine if seat can activate sessions: %s",
                                    error->message);
@@ -853,6 +865,8 @@ get_seat_id_for_current_session (ActUserManager *manager)
         }
 #endif
         console_kit_session_call_get_seat_id (priv->seat.session_proxy,
+                                              G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                              -1,
                                               NULL,
                                               on_get_seat_id_finished,
                                               g_object_ref (manager));
@@ -1323,7 +1337,9 @@ get_current_session_id (ActUserManager *manager)
                 }
         }
 
-        console_kit_manager_call_get_current_session (priv->ck_manager_proxy, NULL,
+        console_kit_manager_call_get_current_session (priv->ck_manager_proxy,
+                                                      G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                      -1, NULL,
                                                       on_get_current_session_finished,
                                                       g_object_ref (manager));
 }
@@ -1483,6 +1499,8 @@ get_uid_for_new_session (ActUserManagerNewSession *new_session)
 
         new_session->pending_calls++;
         console_kit_session_call_get_unix_user (new_session->proxy,
+                                                G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                -1,
                                                 new_session->cancellable,
                                                 on_get_unix_user_finished,
                                                 new_session);
@@ -1563,6 +1581,8 @@ find_user_in_accounts_service (ActUserManager                 *manager,
                 case ACT_USER_MANAGER_FETCH_USER_FROM_USERNAME_REQUEST:
                     accounts_accounts_call_find_user_by_name (priv->accounts_proxy,
                                                               request->username,
+                                                              G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                              -1,
                                                               NULL,
                                                               on_find_user_by_name_finished,
                                                               request);
@@ -1570,6 +1590,8 @@ find_user_in_accounts_service (ActUserManager                 *manager,
                 case ACT_USER_MANAGER_FETCH_USER_FROM_ID_REQUEST:
                     accounts_accounts_call_find_user_by_id (priv->accounts_proxy,
                                                             request->uid,
+                                                            G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                            -1,
                                                             NULL,
                                                             on_find_user_by_id_finished,
                                                             request);
@@ -1733,6 +1755,8 @@ get_x11_display_for_new_session (ActUserManagerNewSession *new_session)
 
         new_session->pending_calls++;
         console_kit_session_call_get_x11_display (new_session->proxy,
+                                                  G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                  -1,
                                                   new_session->cancellable,
                                                   on_get_x11_display_finished,
                                                   new_session);
@@ -2429,6 +2453,8 @@ load_user (ActUserManager *manager,
 
         user_found = accounts_accounts_call_find_user_by_name_sync (priv->accounts_proxy,
                                                                     username,
+                                                                    G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                                    -1,
                                                                     &object_path,
                                                                     NULL,
                                                                     &error);
@@ -2621,6 +2647,8 @@ load_console_kit_sessions (ActUserManager *manager)
 
         priv->getting_sessions = TRUE;
         console_kit_seat_call_get_sessions (priv->seat.seat_proxy,
+                                            G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                            -1,
                                             NULL,
                                             on_get_sessions_finished,
                                             g_object_ref (manager));
@@ -2654,6 +2682,8 @@ load_users (ActUserManager *manager)
         g_debug ("ActUserManager: calling 'ListCachedUsers'");
 
         could_list = accounts_accounts_call_list_cached_users_sync (priv->accounts_proxy,
+                                                                    G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                                    -1,
                                                                     &user_paths,
                                                                     NULL, &error);
 
@@ -3173,6 +3203,8 @@ act_user_manager_create_user (ActUserManager      *manager,
                                                        username,
                                                        fullname,
                                                        accounttype,
+                                                       G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                       -1,
                                                        &path,
                                                        NULL,
                                                        &local_error);
@@ -3244,6 +3276,8 @@ act_user_manager_create_user_async (ActUserManager      *manager,
                                             username,
                                             fullname,
                                             accounttype,
+                                            G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                            -1,
                                             cancellable,
                                             act_user_manager_async_complete_handler, task);
 }
@@ -3318,6 +3352,8 @@ act_user_manager_cache_user (ActUserManager     *manager,
 
         res = accounts_accounts_call_cache_user_sync (priv->accounts_proxy,
                                                       username,
+                                                      G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                      -1,
                                                       &path,
                                                       NULL,
                                                       &local_error);
@@ -3369,6 +3405,8 @@ act_user_manager_cache_user_async (ActUserManager      *manager,
 
         accounts_accounts_call_cache_user (priv->accounts_proxy,
                                            username,
+                                           G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                           -1,
                                            cancellable,
                                            act_user_manager_async_complete_handler, task);
 }
@@ -3445,6 +3483,8 @@ act_user_manager_uncache_user (ActUserManager     *manager,
 
         res = accounts_accounts_call_uncache_user_sync (priv->accounts_proxy,
                                                         username,
+                                                        G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                        -1,
                                                         NULL,
                                                         &local_error);
         if (!res) {
@@ -3494,6 +3534,8 @@ act_user_manager_uncache_user_async (ActUserManager      *manager,
 
         accounts_accounts_call_uncache_user (priv->accounts_proxy,
                                              username,
+                                             G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                             -1,
                                              cancellable,
                                              act_user_manager_async_complete_handler, task);
 }
@@ -3567,6 +3609,8 @@ act_user_manager_delete_user (ActUserManager  *manager,
         if (!accounts_accounts_call_delete_user_sync (priv->accounts_proxy,
                                                       act_user_get_uid (user),
                                                       remove_files,
+                                                      G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                                      -1,
                                                       NULL,
                                                       &local_error)) {
                 g_propagate_error (error, local_error);
@@ -3617,6 +3661,8 @@ act_user_manager_delete_user_async (ActUserManager      *manager,
 
         accounts_accounts_call_delete_user (priv->accounts_proxy,
                                             act_user_get_uid (user), remove_files,
+                                            G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION,
+                                            -1,
                                             cancellable,
                                             act_user_manager_async_complete_handler, task);
 }

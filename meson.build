@@ -138,9 +138,12 @@ endif
 
 add_project_arguments(common_flags, language: 'c')
 
-gio_dep = dependency('gio-2.0', version: '>= 2.37.3')
+# Ensure we have the changes from https://gitlab.gnome.org/GNOME/glib/merge_requests/1286
+# and https://gitlab.gnome.org/GNOME/glib/merge_requests/1342
+glib_min_version = '2.63.5'
+gio_dep = dependency('gio-2.0', version: '>= ' + glib_min_version)
 gio_unix_dep = dependency('gio-unix-2.0')
-glib_dep = dependency('glib-2.0', version: '>= 2.44')
+glib_dep = dependency('glib-2.0', version: '>= ' + glib_min_version)
 polkit_gobject_dep = dependency('polkit-gobject-1')
 
 crypt_dep = cc.find_library('crypt')
