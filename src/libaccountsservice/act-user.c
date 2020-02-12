@@ -379,6 +379,22 @@ act_user_class_init (ActUserClass *class)
                                                               "The path to an icon for this user.",
                                                               NULL,
                                                               G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+        /**
+         * ActUser:language: (nullable)
+         *
+         * The user’s locale, in the format
+         * `language[_territory][.codeset][@modifier]`, where `language` is an
+         * ISO 639 language code, `territory` is an ISO 3166 country code, and
+         * `codeset` is a character set or encoding identifier like `ISO-8859-1`
+         * or `UTF-8`; as specified by [`setlocale(3)`](man:setlocale(3)).
+         *
+         * The locale may be the empty string, which means the user is using the
+         * system default locale.
+         *
+         * The property may be %NULL if it wasn’t possible to load it from the
+         * daemon.
+         */
         g_object_class_install_property (gobject_class,
                                          PROP_LANGUAGE,
                                          g_param_spec_string ("language",
@@ -1011,9 +1027,11 @@ act_user_get_icon_file (ActUser *user)
  * act_user_get_language:
  * @user: a #ActUser
  *
- * Returns the path to the configured locale of @user.
+ * Returns the value of #ActUser:language.
  *
- * Returns: (transfer none): a path to an icon
+ * Returns: (transfer none) (nullable): the user’s language, or the empty string
+ *    if they are using the system default language, or %NULL if there is no
+ *    connection to the daemon
  */
 const char *
 act_user_get_language (ActUser *user)
@@ -1345,9 +1363,10 @@ act_user_set_email (ActUser    *user,
 /**
  * act_user_set_language:
  * @user: the user object to alter.
- * @language: a locale (e.g. en_US.utf8)
+ * @language: (not nullable): a locale (for example, `en_US.utf8`), or the empty
+ *    string to use the system default locale
  *
- * Assigns a new locale for @user.
+ * Assigns a new locale for @user, setting #ActUser:language.
  *
  * Note this function is synchronous and ignores errors.
  **/
