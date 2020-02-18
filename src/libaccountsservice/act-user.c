@@ -66,10 +66,6 @@
  * Mode for setting the user's password.
  */
 
-#define ACT_USER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), ACT_TYPE_USER, ActUserClass))
-#define ACT_IS_USER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), ACT_TYPE_USER))
-#define ACT_USER_GET_CLASS(object) (G_TYPE_INSTANCE_GET_CLASS ((object), ACT_TYPE_USER, ActUserClass))
-
 #define ACCOUNTS_NAME           "org.freedesktop.Accounts"
 #define ACCOUNTS_USER_INTERFACE "org.freedesktop.Accounts.User"
 
@@ -116,11 +112,6 @@ struct _ActUser {
 
         guint           is_loaded : 1;
         guint           nonexistent : 1;
-};
-
-struct _ActUserClass
-{
-        GObjectClass parent_class;
 };
 
 static void act_user_finalize     (GObject      *object);

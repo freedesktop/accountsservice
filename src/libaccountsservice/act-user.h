@@ -31,9 +31,8 @@
 
 G_BEGIN_DECLS
 
-#define ACT_TYPE_USER (act_user_get_type ())
-#define ACT_USER(object) (G_TYPE_CHECK_INSTANCE_CAST ((object), ACT_TYPE_USER, ActUser))
-#define ACT_IS_USER(object) (G_TYPE_CHECK_INSTANCE_TYPE ((object), ACT_TYPE_USER))
+#define ACT_TYPE_USER (act_user_get_type())
+G_DECLARE_FINAL_TYPE (ActUser, act_user, ACT, USER, GObject)
 
 typedef enum {
         ACT_USER_ACCOUNT_TYPE_STANDARD,
@@ -45,11 +44,6 @@ typedef enum {
         ACT_USER_PASSWORD_MODE_SET_AT_LOGIN,
         ACT_USER_PASSWORD_MODE_NONE,
 } ActUserPasswordMode;
-
-typedef struct _ActUser ActUser;
-typedef struct _ActUserClass ActUserClass;
-
-GType          act_user_get_type                  (void) G_GNUC_CONST;
 
 const char    *act_user_get_object_path           (ActUser *user);
 
@@ -126,10 +120,6 @@ void           act_user_set_locked                (ActUser    *user,
                                                    gboolean    locked);
 void           act_user_set_automatic_login       (ActUser   *user,
                                                    gboolean  enabled);
-
-#if GLIB_CHECK_VERSION(2, 44, 0)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (ActUser, g_object_unref)
-#endif
 
 G_END_DECLS
 
