@@ -1,61 +1,78 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# 
-# Translators:
-# Necdet Yücel <necdetyucel@gmail.com>, 2012
+# Turkish translation for AccountsService
+# Copyright (C) 2012-2019 AccountsService'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the AccountsService package.
+#
+# Necdet Yücel <necdetyucel@gmail.com>, 2012.
+# Sabri Ünal <libreajans@gmail.com>, 2019.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: accounts service\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 09:48-0500\n"
-"PO-Revision-Date: 2019-02-22 14:19+0000\n"
-"Last-Translator: halfline <halfline@gmail.com>\n"
-"Language-Team: Turkish (http://www.transifex.com/freedesktop/accountsservice/language/tr/)\n"
+"Report-Msgid-Bugs-To: https://gitlab.freedesktop.org/accountsservice/"
+"accountsservice/issues\n"
+"POT-Creation-Date: 2019-09-07 15:24+0000\n"
+"PO-Revision-Date: 2019-09-07 22:15+0300\n"
+"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
+"Language-Team: Türkçe <gnome-turk@gnome.org>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: tr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 2.0.6\n"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:1
+#: data/org.freedesktop.accounts.policy.in:11
 msgid "Change your own user data"
 msgstr "Kullanıcı bilgilerinizi değiştirin"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:2
+#: data/org.freedesktop.accounts.policy.in:12
 msgid "Authentication is required to change your own user data"
-msgstr "Kendi kullanıcı bilginizi değiştirmek için kimlik kanıtlaması gereklidir"
+msgstr ""
+"Kendi kullanıcı bilginizi değiştirmek için kimlik kanıtlaması gereklidir"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:3
+#: data/org.freedesktop.accounts.policy.in:21
+msgid "Change your own user password"
+msgstr "Kullanıcı parolanızı değiştirin"
+
+#: data/org.freedesktop.accounts.policy.in:22
+msgid "Authentication is required to change your own user password"
+msgstr ""
+"Kendi kullanıcı parolanızı değiştirmek için kimlik kanıtlaması gereklidir"
+
+#: data/org.freedesktop.accounts.policy.in:31
 msgid "Manage user accounts"
 msgstr "Kullanıcı hesaplarını yönet"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:4
+#: data/org.freedesktop.accounts.policy.in:32
 msgid "Authentication is required to change user data"
 msgstr "Kullanıcı bilgisini değiştirmek için kimlik kanıtlaması gereklidir"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:5
+#: data/org.freedesktop.accounts.policy.in:41
 msgid "Change the login screen configuration"
 msgstr "Oturum açma ekranı yapılandırmasını değiştirin"
 
-#: ../data/org.freedesktop.accounts.policy.in.h:6
+#: data/org.freedesktop.accounts.policy.in:42
 msgid "Authentication is required to change the login screen configuration"
-msgstr "Oturum açma ekranı yapılandırmasını değiştirmek için kimlik kanıtlaması gereklidir"
+msgstr ""
+"Oturum açma ekranı yapılandırmasını değiştirmek için kimlik kanıtlaması "
+"gereklidir"
 
-#: ../src/main.c:127
+#: src/main.c:201
 msgid "Output version information and exit"
 msgstr "Sürüm bilgisini göster ve çık"
 
-#: ../src/main.c:128
+#: src/main.c:202
 msgid "Replace existing instance"
 msgstr "Mevcut örneği değiştir"
 
-#: ../src/main.c:129
+#: src/main.c:203
 msgid "Enable debugging code"
 msgstr "Hata ayıklama kodunu aktif et"
 
-#: ../src/main.c:149
+#: src/main.c:222
 msgid ""
 "Provides D-Bus interfaces for querying and manipulating\n"
 "user account information."
-msgstr "Kullanıcı hesap bilgisini sorgulamak\nve düzenlemek için D-Bus arayüzü sunar"
+msgstr ""
+"Kullanıcı hesap bilgisini sorgulamak\n"
+"ve düzenlemek için D-Bus arayüzü sunar."
