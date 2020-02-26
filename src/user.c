@@ -893,6 +893,11 @@ user_set_real_name (AccountsUser          *auser,
                 return TRUE;
         }
 
+        if (g_utf8_strchr (real_name, -1, ',') != NULL) {
+                throw_error (context, ERROR_FAILED, "setting real name failed: real name '%s' must not contain commas", real_name);
+                return TRUE;
+        }
+
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
                 action_id = "org.freedesktop.accounts.change-own-user-data";
         else
