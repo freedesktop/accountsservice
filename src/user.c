@@ -68,6 +68,7 @@ struct User {
         GVariant     *login_history;
         gchar        *icon_file;
         gchar        *default_icon_file;
+        gchar        *gecos;
         gboolean      account_expiration_policy_known;
         gboolean      cached;
 
@@ -151,6 +152,7 @@ user_update_from_pwent (User          *user,
 
         g_object_freeze_notify (G_OBJECT (user));
 
+        g_clear_pointer (&user->gecos, g_free);
         if (pwent->pw_gecos && pwent->pw_gecos[0] != '\0') {
                 gchar *first_comma = NULL;
                 gchar *valid_utf8_name = NULL;
@@ -158,6 +160,7 @@ user_update_from_pwent (User          *user,
                 if (g_utf8_validate (pwent->pw_gecos, -1, NULL)) {
                         valid_utf8_name = pwent->pw_gecos;
                         first_comma = g_utf8_strchr (valid_utf8_name, -1, ',');
+                        user->gecos = g_strdup (pwent->pw_gecos);
                 }
                 else {
                         g_warning ("User %s has invalid UTF-8 in GECOS field. "
@@ -834,7 +837,9 @@ user_change_real_name_authorized_cb (Daemon                *daemon,
 
 {
         gchar *name = data;
+        g_autofree gchar *new_gecos = NULL;
         g_autoptr(GError) error = NULL;
+        const gchar *first_comma = NULL;
         const gchar *argv[6];
 
         if (g_strcmp0 (accounts_user_get_real_name (ACCOUNTS_USER (user)), name) != 0) {
@@ -844,9 +849,21 @@ user_change_real_name_authorized_cb (Daemon                *daemon,
                          accounts_user_get_uid (ACCOUNTS_USER (user)),
                          name);
 
+                if (user->gecos != NULL)
+                        first_comma = g_utf8_strchr (user->gecos, -1, ',');
+
+                if (first_comma != NULL) {
+                        /* Preserve the existing value of the GECOS
+                         * except for the first element, full name.
+                         */
+                        new_gecos = g_strconcat (name, first_comma, NULL);
+                } else {
+                        new_gecos = g_strdup (name);
+                }
+
                 argv[0] = "/usr/sbin/usermod";
                 argv[1] = "-c";
-                argv[2] = name;
+                argv[2] = new_gecos;
                 argv[3] = "--";
                 argv[4] = accounts_user_get_user_name (ACCOUNTS_USER (user));
                 argv[5] = NULL;
@@ -2069,6 +2086,7 @@ user_finalize (GObject *object)
         g_clear_pointer (&user->keyfile, g_key_file_unref);
 
         g_free (user->default_icon_file);
+        g_free (user->gecos);
 
         g_clear_pointer (&user->login_history, g_variant_unref);
 
