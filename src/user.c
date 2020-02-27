@@ -873,7 +873,7 @@ user_set_real_name (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
@@ -981,7 +981,7 @@ user_set_email (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
@@ -1031,7 +1031,7 @@ user_set_language (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
@@ -1079,7 +1079,7 @@ user_set_session (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
@@ -1127,7 +1127,7 @@ user_set_session_type (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
@@ -1175,7 +1175,7 @@ user_set_x_session (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
@@ -1226,7 +1226,7 @@ user_get_password_expiration_policy (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
@@ -1275,7 +1275,7 @@ user_set_location (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
@@ -1553,7 +1553,7 @@ user_set_icon_file (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
@@ -1743,7 +1743,7 @@ user_set_account_type (AccountsUser          *auser,
         User *user = (User*)auser;
         if (account_type < 0 || account_type > ACCOUNT_TYPE_LAST) {
                 throw_error (context, ERROR_FAILED, "unknown account type: %d", account_type);
-                return FALSE;
+                return TRUE;
         }
 
         daemon_local_check_auth (user->daemon,
@@ -1848,12 +1848,12 @@ user_set_password_mode (AccountsUser          *auser,
 
         if (mode < 0 || mode > PASSWORD_MODE_LAST) {
                 throw_error (context, ERROR_FAILED, "unknown password mode: %d", mode);
-                return FALSE;
+                return TRUE;
         }
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
@@ -1933,7 +1933,7 @@ user_set_password (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         data = g_new (gchar *, 3);
@@ -1992,7 +1992,7 @@ user_set_password_hint (AccountsUser          *auser,
 
         if (!get_caller_uid (context, &uid)) {
                 throw_error (context, ERROR_FAILED, "identifying caller failed");
-                return FALSE;
+                return TRUE;
         }
 
         if (accounts_user_get_uid (ACCOUNTS_USER (user)) == (uid_t) uid)
