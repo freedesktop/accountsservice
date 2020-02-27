@@ -2070,7 +2070,7 @@ user_finalize (GObject *object)
 
         g_free (user->default_icon_file);
 
-       g_clear_pointer (&user->login_history, g_variant_unref);
+        g_clear_pointer (&user->login_history, g_variant_unref);
 
         if (G_OBJECT_CLASS (user_parent_class)->finalize)
                 (*G_OBJECT_CLASS (user_parent_class)->finalize) (object);
