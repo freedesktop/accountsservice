@@ -47,6 +47,8 @@
 #include "wtmp-helper.h"
 #include "daemon.h"
 #include "util.h"
+#include "user.h"
+#include "accounts-user-generated.h"
 
 #define PATH_PASSWD "/etc/passwd"
 #define PATH_SHADOW "/etc/shadow"
@@ -1290,6 +1292,8 @@ daemon_delete_user_authorized_cb (Daemon                *daemon,
         g_autoptr(GError) error = NULL;
         struct passwd *pwent;
         const gchar *argv[6];
+        const gchar *homedir;
+        gchar *resolved_homedir;
         User *user;
 
         pwent = getpwuid (ud->uid);
@@ -1314,6 +1318,15 @@ daemon_delete_user_authorized_cb (Daemon                *daemon,
         remove_cache_files (pwent->pw_name);
 
         user_set_saved (user, FALSE);
+
+        /* Never delete the root filesystem. */
+        homedir = accounts_user_get_home_directory (ACCOUNTS_USER (user));
+        resolved_homedir = realpath (homedir, NULL);
+        if (resolved_homedir != NULL && g_strcmp0 (resolved_homedir, "/") == 0) {
+                sys_log (context, "Refusing to delete home directory of user '%s' because it is root filesystem", pwent->pw_name);
+                ud->remove_files = FALSE;
+        }
+        free (resolved_homedir);
 
         argv[0] = "/usr/sbin/userdel";
         if (ud->remove_files) {
