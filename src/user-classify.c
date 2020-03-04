@@ -76,39 +76,6 @@ user_classify_is_blacklisted (const char *username)
         return FALSE;
 }
 
-#ifdef ENABLE_USER_HEURISTICS
-static gboolean
-user_classify_is_excluded_by_heuristics (const gchar *username,
-                                         const gchar *password_hash)
-{
-        gboolean ret = FALSE;
-
-        if (password_hash != NULL) {
-                /* skip over the account-is-locked '!' prefix if present */
-                if (password_hash[0] == '!')
-                    password_hash++;
-
-                if (password_hash[0] != '\0') {
-                        /* modern hashes start with "$n$" */
-                        if (password_hash[0] == '$') {
-                                if (strlen (password_hash) < 4)
-                                    ret = TRUE;
-
-                        /* DES crypt is base64 encoded [./A-Za-z0-9]*
-                         */
-                        } else if (!g_ascii_isalnum (password_hash[0]) &&
-                                   password_hash[0] != '.' &&
-                                   password_hash[0] != '/') {
-                                ret = TRUE;
-                        }
-                }
-
-        }
-
-        return ret;
-}
-#endif /* ENABLE_USER_HEURISTICS */
-
 static gboolean
 is_invalid_shell (const char *shell)
 {
@@ -155,14 +122,6 @@ user_classify_is_human (uid_t        uid,
 
         if (shell != NULL && is_invalid_shell (shell))
                 return FALSE;
-
-#ifdef ENABLE_USER_HEURISTICS
-        /* only do heuristics on the range 500-1000 to catch one off migration problems in Fedora */
-        if (uid >= 500 && uid < MINIMUM_UID) {
-                if (!user_classify_is_excluded_by_heuristics (username, password_hash))
-                        return TRUE;
-        }
-#endif
 
         return uid >= MINIMUM_UID;
 }
