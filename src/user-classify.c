@@ -51,7 +51,8 @@ static const char *default_excludes[] = {
         "man",
         "at",
         "gdm",
-        "gnome-initial-setup"
+        "gnome-initial-setup",
+        "git"
 };
 
 static gboolean
