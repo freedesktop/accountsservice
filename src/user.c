@@ -1684,6 +1684,8 @@ user_change_account_type_authorized_cb (Daemon                *daemon,
         gint ngroups;
         g_autoptr(GString) str = NULL;
         g_auto(GStrv) extra_admin_groups = NULL;
+        g_autofree gid_t *extra_admin_groups_gids = NULL;
+        gsize n_extra_admin_groups_gids = 0;
         gid_t admin_gid;
         struct group *grp;
         gint i;
@@ -1703,26 +1705,38 @@ user_change_account_type_authorized_cb (Daemon                *daemon,
                 }
                 admin_gid = grp->gr_gid;
 
+                extra_admin_groups = g_strsplit (EXTRA_ADMIN_GROUPS, ",", 0);
+                n_extra_admin_groups_gids = 0;
+                extra_admin_groups_gids = g_new0 (gid_t, g_strv_length (extra_admin_groups));
+
+                for (i = 0; extra_admin_groups[i] != NULL; i++) {
+                        struct group *extra_group;
+                        extra_group = getgrnam (extra_admin_groups[i]);
+                        if (extra_group == NULL || extra_group->gr_gid == admin_gid)
+                                continue;
+
+                        extra_admin_groups_gids[n_extra_admin_groups_gids++] = extra_group->gr_gid;
+                }
+
                 ngroups = get_user_groups (accounts_user_get_user_name (ACCOUNTS_USER (user)), user->gid, &groups);
 
                 str = g_string_new ("");
                 for (i = 0; i < ngroups; i++) {
+                        gboolean group_is_admin = FALSE;
+
                         if (groups[i] == admin_gid)
-                                continue;
-                        g_string_append_printf (str, "%d,", groups[i]);
+                                group_is_admin = TRUE;
+                        for (gsize j = 0; j < n_extra_admin_groups_gids; j++)
+                                if (groups[i] == extra_admin_groups_gids[j])
+                                        group_is_admin = TRUE;
+
+                        if (!group_is_admin)
+                                g_string_append_printf (str, "%d,", groups[i]);
                 }
                 switch (account_type) {
                 case ACCOUNT_TYPE_ADMINISTRATOR:
-                        extra_admin_groups = g_strsplit (EXTRA_ADMIN_GROUPS, ",", 0);
-
-                        for (i = 0; extra_admin_groups[i] != NULL; i++) {
-                                struct group *extra_group;
-                                extra_group = getgrnam (extra_admin_groups[i]);
-                                if (extra_group == NULL || extra_group->gr_gid == admin_gid)
-                                        continue;
-
-                                g_string_append_printf (str, "%d,", extra_group->gr_gid);
-                        }
+                        for (i = 0; i < n_extra_admin_groups_gids; i++)
+                                g_string_append_printf (str, "%d,", extra_admin_groups_gids[i]);
 
                         g_string_append_printf (str, "%d", admin_gid);
                         break;
