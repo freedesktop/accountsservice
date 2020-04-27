@@ -217,7 +217,7 @@ main (int argc, char *argv[])
                 return EXIT_FAILURE;
         }
 
-        context = g_option_context_new ("");
+        context = g_option_context_new (NULL);
         g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
         g_option_context_set_summary (context, _("Provides D-Bus interfaces for querying and manipulating\nuser account information."));
         g_option_context_add_main_entries (context, entries, NULL);
