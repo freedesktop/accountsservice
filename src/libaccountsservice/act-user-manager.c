@@ -2298,6 +2298,23 @@ act_user_manager_queue_load (ActUserManager *manager)
         }
 }
 
+static void
+on_name_owner_changed (GObject *object,
+                       GParamSpec *pspec,
+                       gpointer user_data)
+{
+        ActUserManager *manager = ACT_USER_MANAGER (user_data);
+        GDBusProxy *accounts_proxy = G_DBUS_PROXY (object);
+        g_autofree gchar *owner = NULL;
+
+        g_return_if_fail (ACT_IS_USER_MANAGER (manager));
+        g_return_if_fail (accounts_proxy != NULL);
+
+        owner = g_dbus_proxy_get_name_owner (accounts_proxy);
+
+        set_is_loaded (manager, owner != NULL);
+}
+
 static gboolean
 ensure_accounts_proxy (ActUserManager *manager)
 {
@@ -2334,6 +2351,10 @@ ensure_accounts_proxy (ActUserManager *manager)
         g_signal_connect (priv->accounts_proxy,
                           "user-deleted",
                           G_CALLBACK (on_user_removed_in_accounts_service),
+                          manager);
+        g_signal_connect (priv->accounts_proxy,
+                          "notify::g-name-owner",
+                          G_CALLBACK (on_name_owner_changed),
                           manager);
 
         return TRUE;
