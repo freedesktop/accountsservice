@@ -1687,7 +1687,6 @@ user_change_account_type_authorized_cb (Daemon                *daemon,
         g_autofree gid_t *extra_admin_groups_gids = NULL;
         gsize n_extra_admin_groups_gids = 0;
         gid_t admin_gid;
-        struct group *grp;
         gint i;
         const gchar *argv[6];
 
@@ -1698,24 +1697,9 @@ user_change_account_type_authorized_cb (Daemon                *daemon,
                          accounts_user_get_uid (ACCOUNTS_USER (user)),
                          account_type);
 
-                grp = getgrnam (ADMIN_GROUP);
-                if (grp == NULL) {
+                if (!get_admin_groups (&admin_gid, &extra_admin_groups_gids, &n_extra_admin_groups_gids)) {
                         throw_error (context, ERROR_FAILED, "failed to set account type: " ADMIN_GROUP " group not found");
                         return;
-                }
-                admin_gid = grp->gr_gid;
-
-                extra_admin_groups = g_strsplit (EXTRA_ADMIN_GROUPS, ",", 0);
-                n_extra_admin_groups_gids = 0;
-                extra_admin_groups_gids = g_new0 (gid_t, g_strv_length (extra_admin_groups));
-
-                for (i = 0; extra_admin_groups[i] != NULL; i++) {
-                        struct group *extra_group;
-                        extra_group = getgrnam (extra_admin_groups[i]);
-                        if (extra_group == NULL || extra_group->gr_gid == admin_gid)
-                                continue;
-
-                        extra_admin_groups_gids[n_extra_admin_groups_gids++] = extra_group->gr_gid;
                 }
 
                 ngroups = get_user_groups (accounts_user_get_user_name (ACCOUNTS_USER (user)), user->gid, &groups);

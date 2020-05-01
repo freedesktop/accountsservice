@@ -257,6 +257,77 @@ get_user_groups (const gchar  *user,
         return res;
 }
 
+/**
+ * get_admin_groups:
+ * @admin_gid_out: (out caller-allocates) (optional): return location for the ID
+ *    of the main admin group
+ * @groups_out: (out callee-allocates) (transfer container) (optional) (length=n_groups_out):
+ *    return location for an array of the extra admin group IDs
+ * @n_groups_out: (out caller-allocates) (optional): return location for the
+ *    number of elements in @group_out
+ *
+ * Get the GIDs of the admin groups on the system, as set at configure time for
+ * accountsservice. The main admin group ID (typically for the `sudo` or `wheel`
+ * group) will be returned in @admin_gid_out. Any group IDs for other admin
+ * groups (such as `lpadmin` or `systemd-journal`) will be returned in
+ * @groups_out, which should be freed by the caller using g_free().
+ *
+ * Returns: %TRUE on success, %FALSE if one or more of the groups could not be
+ *    looked up
+ */
+gboolean
+get_admin_groups (gid_t  *admin_gid_out,
+                  gid_t **groups_out,
+                  gsize  *n_groups_out)
+{
+        g_auto(GStrv) extra_admin_groups = NULL;
+        g_autofree gid_t *extra_admin_groups_gids = NULL;
+        gsize n_extra_admin_groups_gids = 0;
+        gsize i;
+        gboolean retval = FALSE;
+        struct group *grp;
+        gid_t admin_gid = 0;
+
+        /* Get the main admin group ID. */
+        grp = getgrnam (ADMIN_GROUP);
+        if (grp == NULL)
+                goto out;
+        admin_gid = grp->gr_gid;
+
+        /* Get the extra admin group IDs. */
+        extra_admin_groups = g_strsplit (EXTRA_ADMIN_GROUPS, ",", 0);
+        n_extra_admin_groups_gids = 0;
+        extra_admin_groups_gids = g_new0 (gid_t, g_strv_length (extra_admin_groups));
+
+        for (i = 0; extra_admin_groups[i] != NULL; i++) {
+                struct group *extra_group;
+                extra_group = getgrnam (extra_admin_groups[i]);
+                if (extra_group == NULL)
+                        goto out;
+                if (extra_group->gr_gid == admin_gid)
+                        continue;
+
+                extra_admin_groups_gids[n_extra_admin_groups_gids++] = extra_group->gr_gid;
+        }
+
+        retval = TRUE;
+
+out:
+        if (!retval) {
+                admin_gid = 0;
+                g_clear_pointer (&extra_admin_groups_gids, g_free);
+                n_extra_admin_groups_gids = 0;
+        }
+
+        if (admin_gid_out != NULL)
+                *admin_gid_out = admin_gid;
+        if (groups_out != NULL)
+                *groups_out = g_steal_pointer (&extra_admin_groups_gids);
+        if (n_groups_out != NULL)
+                *n_groups_out = n_extra_admin_groups_gids;
+
+        return retval;
+}
 
 gboolean
 get_caller_uid (GDBusMethodInvocation *context,
