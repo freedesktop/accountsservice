@@ -153,7 +153,7 @@ typedef struct
 {
         GHashTable            *normal_users_by_name;
         GHashTable            *system_users_by_name;
-        GHashTable            *users_by_object_path;
+        GHashTable            *users_by_object_path;  /* (element-type utf8 ActUser) (owned) */
         GHashTable            *sessions;
         GDBusConnection       *connection;
         AccountsAccounts      *accounts_proxy;
@@ -161,8 +161,8 @@ typedef struct
         ActUserManagerSeat     seat;
 
         GSList                *new_sessions;
-        GSList                *new_users;
-        GSList                *new_users_inhibiting_load;
+        GSList                *new_users;  /* (element-type ActUser) (owned) */
+        GSList                *new_users_inhibiting_load;  /* (element-type ActUser) (unowned) */
         GSList                *fetch_user_requests;
 
         GSList                *exclude_usernames;
@@ -696,6 +696,7 @@ set_has_multiple_users (ActUserManager *manager,
         }
 }
 
+/* (transfer full) */
 static ActUser *
 create_new_user (ActUserManager *manager)
 {
@@ -822,6 +823,7 @@ update_user (ActUserManager *manager,
         }
 }
 
+/* (transfer none) */
 static ActUser *
 lookup_user_by_name (ActUserManager *manager,
                      const char     *username)
@@ -911,6 +913,7 @@ out:
         }
 }
 
+/* (transfer none) */
 static ActUser *
 find_new_user_with_object_path (ActUserManager *manager,
                                 const char     *object_path)
@@ -931,6 +934,7 @@ find_new_user_with_object_path (ActUserManager *manager,
         return NULL;
 }
 
+/* (transfer full) */
 static ActUser *
 add_new_user_for_object_path (const char     *object_path,
                               ActUserManager *manager)
@@ -943,7 +947,7 @@ add_new_user_for_object_path (const char     *object_path,
         if (user != NULL) {
                 g_debug ("ActUserManager: tracking existing %s with object path %s",
                          describe_user (user), object_path);
-                return user;
+                return g_object_ref (user);
         }
 
         user = find_new_user_with_object_path (manager, object_path);
@@ -951,7 +955,7 @@ add_new_user_for_object_path (const char     *object_path,
         if (user != NULL) {
                 g_debug ("ActUserManager: tracking existing (but very recently added) %s with object path %s",
                          describe_user (user), object_path);
-                return user;
+                return g_object_ref (user);
         }
 
         g_debug ("ActUserManager: tracking new user with object path %s", object_path);
@@ -1224,7 +1228,7 @@ load_user_paths (ActUserManager       *manager,
 
                 g_debug ("ActUserManager: ListCachedUsers finished, will set loaded property after list is fully loaded");
                 for (i = 0; user_paths[i] != NULL; i++) {
-                        ActUser *user;
+                        g_autoptr(ActUser) user = NULL;
 
                         user = add_new_user_for_object_path (user_paths[i], manager);
                         if (!priv->is_loaded) {
@@ -1826,6 +1830,8 @@ act_user_manager_get_user (ActUserManager *manager,
                 if (priv->accounts_proxy != NULL) {
                         fetch_user_with_username_from_accounts_service (manager, user, username);
                 }
+
+                g_object_unref (user);  /* remains in the cache */
         }
 
         return user;
@@ -1836,7 +1842,7 @@ load_user (ActUserManager *manager,
            const char     *username)
 {
         ActUserManagerPrivate *priv = act_user_manager_get_instance_private (manager);
-        ActUser *user;
+        g_autoptr(ActUser) user = NULL;
         g_autoptr(GError) error = NULL;
         char *object_path = NULL;
         gboolean user_found;
@@ -1849,6 +1855,8 @@ load_user (ActUserManager *manager,
         if (user == NULL) {
                 g_debug ("ActUserManager: trying to track new user with username %s", username);
                 user = create_new_user (manager);
+        } else {
+                user = g_object_ref (user);
         }
 
         user_found = accounts_accounts_call_find_user_by_name_sync (priv->accounts_proxy,
@@ -1898,7 +1906,7 @@ act_user_manager_get_user_by_id (ActUserManager *manager,
         user = g_hash_table_lookup (priv->users_by_object_path, object_path);
 
         if (user != NULL) {
-                return g_object_ref (user);
+                return user;
         } else {
                 g_debug ("ActUserManager: trying to track new user with uid %lu", (gulong) id);
                 user = create_new_user (manager);
@@ -1906,6 +1914,8 @@ act_user_manager_get_user_by_id (ActUserManager *manager,
                 if (priv->accounts_proxy != NULL) {
                         fetch_user_with_id_from_accounts_service (manager, user, id);
                 }
+
+                g_object_unref (user);  /* remains in the cache */
         }
 
         return user;
@@ -2543,7 +2553,6 @@ act_user_manager_create_user (ActUserManager      *manager,
         GError *local_error = NULL;
         gboolean res;
         g_autofree gchar *path = NULL;
-        ActUser *user;
 
         g_debug ("ActUserManager: Creating user '%s', '%s', %d",
                  username, fullname, accounttype);
@@ -2564,9 +2573,7 @@ act_user_manager_create_user (ActUserManager      *manager,
                 return NULL;
         }
 
-        user = add_new_user_for_object_path (path, manager);
-
-        return user;
+        return add_new_user_for_object_path (path, manager);
 }
 
 static void
@@ -2654,7 +2661,6 @@ act_user_manager_create_user_finish (ActUserManager  *manager,
 {
         ActUserManagerPrivate *priv = act_user_manager_get_instance_private (manager);
         GAsyncResult *inner_result;
-        ActUser *user = NULL;
         g_autofree gchar *path = NULL;
         GError *remote_error = NULL;
 
@@ -2663,17 +2669,14 @@ act_user_manager_create_user_finish (ActUserManager  *manager,
                 return NULL;
         }
 
-        if (accounts_accounts_call_create_user_finish (priv->accounts_proxy,
-                                                       &path, inner_result, &remote_error)) {
-                user = add_new_user_for_object_path (path, manager);
-        }
-
-        if (remote_error) {
+        if (!accounts_accounts_call_create_user_finish (priv->accounts_proxy,
+                                                        &path, inner_result, &remote_error)) {
                 g_dbus_error_strip_remote_error (remote_error);
                 g_propagate_error (error, remote_error);
+                return NULL;
         }
 
-        return user;
+        return add_new_user_for_object_path (path, manager);
 }
 
 /**
@@ -2783,7 +2786,6 @@ act_user_manager_cache_user_finish (ActUserManager  *manager,
 {
         ActUserManagerPrivate *priv = act_user_manager_get_instance_private (manager);
         GAsyncResult *inner_result;
-        ActUser *user = NULL;
         g_autofree gchar *path = NULL;
         GError *remote_error = NULL;
 
@@ -2792,17 +2794,14 @@ act_user_manager_cache_user_finish (ActUserManager  *manager,
                 return NULL;
         }
 
-        if (accounts_accounts_call_cache_user_finish (priv->accounts_proxy,
-                                                      &path, inner_result, &remote_error)) {
-                user = add_new_user_for_object_path (path, manager);
-        }
-
-        if (remote_error) {
+        if (!accounts_accounts_call_cache_user_finish (priv->accounts_proxy,
+                                                       &path, inner_result, &remote_error)) {
                 g_dbus_error_strip_remote_error (remote_error);
                 g_propagate_error (error, remote_error);
+                return NULL;
         }
 
-        return user;
+        return add_new_user_for_object_path (path, manager);
 }
 
 /**
