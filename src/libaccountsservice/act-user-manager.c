@@ -2660,7 +2660,7 @@ act_user_manager_create_user_finish (ActUserManager  *manager,
 
         inner_result = g_task_propagate_pointer (G_TASK (result), error);
         if (inner_result == NULL) {
-                return FALSE;
+                return NULL;
         }
 
         if (accounts_accounts_call_create_user_finish (priv->accounts_proxy,
@@ -2789,7 +2789,7 @@ act_user_manager_cache_user_finish (ActUserManager  *manager,
 
         inner_result = g_task_propagate_pointer (G_TASK (result), error);
         if (inner_result == NULL) {
-                return FALSE;
+                return NULL;
         }
 
         if (accounts_accounts_call_cache_user_finish (priv->accounts_proxy,
