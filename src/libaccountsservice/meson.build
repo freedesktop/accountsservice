@@ -69,6 +69,12 @@ pkg.generate(
     'datadir=${prefix}/' + get_option('datadir'),
     'interfacesdir=${datadir}/accountsservice/interfaces',
   ],
+  requires_private : [
+    'gio-2.0',
+    'glib-2.0',
+    'gobject-2.0',
+    'polkit-gobject-1',
+  ],
 )
 
 if get_option('introspection')
