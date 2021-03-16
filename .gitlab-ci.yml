@@ -1,7 +1,23 @@
+variables:
+  DEPENDENCIES: dbus-devel
+                gcc
+                gettext-devel
+                glib-devel
+                gobject-introspection-devel
+                gtk-doc
+                make
+                meson
+                ninja-build
+                polkit-devel
+                redhat-rpm-config
+                systemd-devel
+                vala
+
 build-fedora:
   image: fedora:rawhide
+  stage: build
   before_script:
-    - dnf install -y gcc meson ninja-build gobject-introspection-devel glib-devel gtk-doc gettext-devel make polkit-devel redhat-rpm-config systemd-devel dbus-devel vala
+    - dnf install -y $DEPENDENCIES
   script:
     - meson -Dgtk_doc=true _build
     - ninja -C _build all
