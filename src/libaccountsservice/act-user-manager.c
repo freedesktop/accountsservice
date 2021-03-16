@@ -790,17 +790,68 @@ remove_user (ActUserManager *manager,
         g_object_unref (user);
 }
 
+static const char *
+find_username_for_uid (GHashTable *users_table,
+                       uid_t       user_id)
+{
+        GHashTableIter iter;
+        gpointer key, value;
+
+        g_hash_table_iter_init (&iter, users_table);
+        while (g_hash_table_iter_next (&iter, &key, &value)) {
+                if (act_user_get_uid (ACT_USER (value)) == user_id) {
+                        return key;
+                }
+        }
+
+        return NULL;
+}
+
 static void
 update_user (ActUserManager *manager,
              ActUser        *user)
 {
         ActUserManagerPrivate *priv = act_user_manager_get_instance_private (manager);
         const char *username;
+        const char *system_user;
 
         g_debug ("ActUserManager: updating %s", describe_user (user));
 
         username = act_user_get_user_name (user);
-        if (g_hash_table_lookup (priv->system_users_by_name, username) != NULL) {
+        system_user = g_hash_table_lookup (priv->system_users_by_name, username);
+
+        if (system_user == NULL) {
+                const char *normal_user;
+                const char *old_username;
+
+                normal_user = g_hash_table_lookup (priv->normal_users_by_name, username);
+                if (normal_user == NULL) {
+                        uid_t uid = act_user_get_uid (user);
+                        old_username = find_username_for_uid (priv->normal_users_by_name, uid);
+                        GHashTable *users_table = NULL;
+
+                        if (old_username) {
+                                users_table = priv->normal_users_by_name;
+                        } else {
+                                old_username = find_username_for_uid (priv->system_users_by_name, uid);
+                                if (old_username) {
+                                        users_table = priv->system_users_by_name;
+                                        system_user = username;
+                                }
+                        }
+
+                        if (users_table != NULL) {
+                                g_debug ("ActUserManager: %s is the new username for %s",
+                                         describe_user (user), old_username);
+                                g_hash_table_insert (users_table,
+                                                     g_strdup (username),
+                                                     g_object_ref (user));
+                                g_hash_table_remove (users_table, old_username);
+                        }
+                }
+        }
+
+        if (system_user != NULL) {
                 if (!act_user_is_system_account (user)) {
                         g_debug ("ActUserManager: %s is no longer a system account, treating as normal user",
                                  describe_user (user));
