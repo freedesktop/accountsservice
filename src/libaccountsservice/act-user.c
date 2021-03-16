@@ -240,7 +240,10 @@ act_user_get_property (GObject    *object,
                 if (user->accounts_proxy != NULL) {
                         const char *property_name;
 
-                        property_name = g_param_spec_get_name (pspec);
+                        if (param_id == PROP_X_SESSION)
+                                property_name = "xsession";
+                        else
+                                property_name = g_param_spec_get_name (pspec);
 
                         g_object_get_property (G_OBJECT (user->accounts_proxy), property_name, value);
 
