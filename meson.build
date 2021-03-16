@@ -212,6 +212,8 @@ if get_option('gtk_doc')
   subdir('doc/libaccountsservice')
 endif
 
+subdir('tests')
+
 configure_file(
   output: 'config.h',
   configuration: config_h,
