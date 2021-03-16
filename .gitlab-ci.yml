@@ -12,15 +12,37 @@ variables:
                 redhat-rpm-config
                 systemd-devel
                 vala
+  TEST_DEPENDENCIES: gcovr
+                     python3-dbusmock
+                     python3-gobject-base
+
+stages:
+  - build
+  - test
 
 build-fedora:
   image: fedora:rawhide
   stage: build
   before_script:
-    - dnf install -y $DEPENDENCIES
+    - dnf install -y $DEPENDENCIES $([ $CI_JOB_STAGE = test ] && echo $TEST_DEPENDENCIES)
   script:
     - meson -Dgtk_doc=true _build
     - ninja -C _build all
+
+test-fedora:
+  extends:
+    - build-fedora
+  stage: test
+  script:
+    - meson _build -Db_coverage=true
+    - meson test -C _build --print-errorlogs --no-stdsplit --timeout-multiplier 3
+    - ninja -C _build coverage
+    - cat _build/meson-logs/coverage.txt
+  artifacts:
+    name: log-and-coverage
+    when: always
+    paths:
+      - _build/meson-logs
 
 #build-ubuntu:
 #  image: ubuntu:rolling
