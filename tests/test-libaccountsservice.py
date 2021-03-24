@@ -11,8 +11,10 @@ __copyright__ = '(c) 2021 Canonical Ltd.'
 import os
 import subprocess
 import sys
+import time
 import unittest
 
+import dbus
 import dbusmock
 
 try:
@@ -45,8 +47,12 @@ class TestAccountsService(dbusmock.DBusTestCase):
         self._manager = AccountsService.UserManager.get_default()
         while not self._manager.props.is_loaded:
             self.ctx.iteration(True)
-        self.assertFalse(self._manager.no_service())
         self.assertTrue(self._manager.props.is_loaded)
+        self.assertFalse(self._manager.no_service())
+
+    def get_property(self, name):
+        return self._mock_obj.Get('org.freedesktop.Accounts', name,
+                                  dbus_interface=dbus.PROPERTIES_IFACE)
 
     def tearDown(self):
         for user in self._manager.list_users():
@@ -82,12 +88,18 @@ class TestAccountsService(dbusmock.DBusTestCase):
         self.assertTrue(self._manager.props.is_loaded)
         self.assertFalse(self._manager.list_users())
         self.assertFalse(self._manager.props.has_multiple_users)
+        self.assertFalse(self._mock_obj.ListMockUsers())
+        self.assertTrue(self.get_property('HasNoUsers'))
+        self.assertFalse(self.get_property('HasMultipleUsers'))
+        self.assertFalse(self.get_property('AutomaticLoginUsers'))
+        self.assertEqual(self.get_property('DaemonVersion'), 'dbus-mock-0.1')
 
     def test_create_user(self):
         self._manager.create_user(
             'pizza', 'I Love Pizza',
             AccountsService.UserAccountType.ADMINISTRATOR)
         self.assertFalse(self._manager.props.has_multiple_users)
+        self.assertFalse(self.get_property('HasNoUsers'))
         [user] = self._manager.list_users()
         self.assertEqual(user.get_account_type(),
                          AccountsService.UserAccountType.ADMINISTRATOR)
@@ -105,6 +117,7 @@ class TestAccountsService(dbusmock.DBusTestCase):
         self.assertTrue(error.exception.matches(
             AccountsService.UserManagerError.quark(),
             AccountsService.UserManagerError.FAILED))
+        self.assertFalse(self._manager.props.has_multiple_users)
 
     def test_delete_non_existent_user(self):
         user = self._manager.create_user('not-here-sorry', 'I am leaving...',
@@ -164,6 +177,7 @@ class TestAccountsService(dbusmock.DBusTestCase):
             'pizza', 'I Love Pizza!',
             AccountsService.UserAccountType.ADMINISTRATOR)
         self.assertFalse(self._manager.props.has_multiple_users)
+        self.assertFalse(self.get_property('HasNoUsers'))
         [user] = self._manager.list_users()
         self.assertEqual(self._manager.get_user('pizza'), user)
         self.assertEqual(self._manager.get_user_by_id(2001), user)
@@ -181,6 +195,7 @@ class TestAccountsService(dbusmock.DBusTestCase):
         while not self._manager.props.has_multiple_users:
             self.ctx.iteration(True)
 
+        self.assertFalse(self.get_property('HasNoUsers'))
         self.assertTrue(self._manager.props.has_multiple_users)
         self.assertIn(other, self._manager.list_users())
         self.assertEqual(self._manager.get_user('schiacciata'), other)
@@ -195,13 +210,14 @@ class TestAccountsService(dbusmock.DBusTestCase):
         user = self._manager.create_user(
             'pizza', 'I Love Pizza',
             AccountsService.UserAccountType.ADMINISTRATOR)
+        creation_time = int(time.time())
 
         self.assertEqual(user.get_account_type(),
                          AccountsService.UserAccountType.ADMINISTRATOR)
         self.assertFalse(self._manager.props.has_multiple_users)
         self.assertFalse(user.get_automatic_login())
         self.assertEqual(user.get_email(), 'pizza@python-dbusmock.org')
-        self.assertEqual(user.get_home_dir(), '/tmp/dbusmock-home/pizza')
+        self.assertEqual(user.get_home_dir(), '/nonexisting/mock-home/pizza')
         self.assertEqual(user.get_icon_file(), '')
         self.assertEqual(user.get_language(), 'C')
         self.assertEqual(user.get_location(), '')
@@ -214,7 +230,7 @@ class TestAccountsService(dbusmock.DBusTestCase):
         self.assertEqual(user.get_object_path(),
                          '/org/freedesktop/Accounts/User2001')
         self.assertEqual(user.get_password_expiration_policy(),
-                         (1000, 1615832413, 0, 0, 0, 0))
+                         (sys.maxsize, creation_time, 0, 0, 0, 0))
         self.assertEqual(user.get_password_hint(), 'Remember it, come on!')
         self.assertEqual(user.get_password_mode(),
                          AccountsService.UserPasswordMode.REGULAR)
@@ -223,7 +239,7 @@ class TestAccountsService(dbusmock.DBusTestCase):
         self.assertFalse(user.get_saved())
         self.assertEqual(user.get_session(), 'mock-session')
         self.assertEqual(user.get_session_type(), 'wayland')
-        self.assertEqual(user.get_shell(), '/bin/zsh')
+        self.assertEqual(user.get_shell(), '/usr/bin/zsh')
         self.assertEqual(user.get_uid(), 2001)
         self.assertEqual(user.get_user_name(), 'pizza')
         self.assertEqual(user.get_x_session(), 'mock-xsession')
@@ -244,7 +260,8 @@ class TestAccountsService(dbusmock.DBusTestCase):
         self.assertFalse(self._manager.props.has_multiple_users)
         self.assertFalse(user.props.automatic_login)
         self.assertEqual(user.props.email, 'pizza@python-dbusmock.org')
-        self.assertEqual(user.props.home_directory, '/tmp/dbusmock-home/pizza')
+        self.assertEqual(user.props.home_directory,
+                         '/nonexisting/mock-home/pizza')
         self.assertEqual(user.props.icon_file, '')
         self.assertEqual(user.props.language, 'C')
         self.assertEqual(user.props.location, '')
@@ -256,7 +273,7 @@ class TestAccountsService(dbusmock.DBusTestCase):
         self.assertEqual(user.props.password_mode,
                          AccountsService.UserPasswordMode.REGULAR)
         self.assertEqual(user.props.real_name, 'I Love Pizza')
-        self.assertEqual(user.props.shell, '/bin/zsh')
+        self.assertEqual(user.props.shell, '/usr/bin/zsh')
         self.assertEqual(user.props.uid, 2001)
         self.assertEqual(user.props.user_name, 'pizza')
         self.assertEqual(user.props.x_session, 'mock-xsession')
@@ -289,13 +306,13 @@ class TestAccountsService(dbusmock.DBusTestCase):
         self.wait_changed(user)
         self.assertFalse(user.get_automatic_login())
 
-        user.set_email('Test Email')
+        user.set_email('test@email.org')
         self.wait_changed(user)
-        self.assertEqual(user.get_email(), 'Test Email')
+        self.assertEqual(user.get_email(), 'test@email.org')
 
-        user.set_icon_file('Test IconFile')
+        user.set_icon_file('/nonexistant/home/icon.png')
         self.wait_changed(user)
-        self.assertEqual(user.get_icon_file(), 'Test IconFile')
+        self.assertEqual(user.get_icon_file(), '/nonexistant/home/icon.png')
 
         user.set_language('Test Language')
         self.wait_changed(user)
@@ -388,6 +405,45 @@ class TestAccountsService(dbusmock.DBusTestCase):
         self.assertTrue(error.exception.matches(
             AccountsService.UserManagerError.quark(),
             AccountsService.UserManagerError.FAILED))
+
+    def test_automatic_login_users(self):
+        user = self._manager.create_user(
+            'test-user', 'I am a Test user',
+            AccountsService.UserAccountType.STANDARD)
+
+        user.set_automatic_login(True)
+        self.wait_changed(user)
+        self.assertTrue(user.get_automatic_login())
+        self.assertEqual(
+            [user.get_object_path()],
+            self.get_property('AutomaticLoginUsers'))
+        self.assertCountEqual(self._mock_obj.ListMockUsers(),
+                              self.get_property('AutomaticLoginUsers'))
+
+        user2 = self._manager.create_user(
+            'another-test-user', 'I am another Test user',
+            AccountsService.UserAccountType.STANDARD)
+        self.assertNotIn(user2.get_object_path(),
+                         self.get_property('AutomaticLoginUsers'))
+
+        user2.set_automatic_login(True)
+        self.assertIn(user2.get_object_path(),
+                      self.get_property('AutomaticLoginUsers'))
+        self.assertEqual(len(self.get_property('AutomaticLoginUsers')), 2)
+        self.assertCountEqual(self._mock_obj.ListMockUsers(),
+                              self.get_property('AutomaticLoginUsers'))
+
+        user.set_automatic_login(False)
+        self.wait_changed(user)
+        self.assertFalse(user.get_automatic_login())
+        self.assertNotIn(user.get_object_path(),
+                         self.get_property('AutomaticLoginUsers'))
+        self.assertEqual(len(self.get_property('AutomaticLoginUsers')), 1)
+
+        self._manager.delete_user(user2, False)
+        while user2 in self._manager.list_users():
+            self.ctx.iteration(True)
+        self.assertFalse(self.get_property('AutomaticLoginUsers'))
 
 
 if __name__ == '__main__':

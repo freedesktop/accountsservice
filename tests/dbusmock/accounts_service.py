@@ -11,8 +11,10 @@ __email__ = 'marco.trevisan@canonical.com'
 __copyright__ = '(c) 2021 Canonical Ltd.'
 __license__ = 'LGPL 3+'
 
-import dbus
+import sys
+import time
 
+import dbus
 from dbusmock import MOCK_IFACE, mockobject
 
 BUS_NAME = 'org.freedesktop.Accounts'
@@ -20,6 +22,8 @@ MAIN_OBJ = '/org/freedesktop/Accounts'
 MAIN_IFACE = 'org.freedesktop.Accounts'
 USER_IFACE = MAIN_IFACE + '.User'
 SYSTEM_BUS = True
+
+DEFAULT_USER_PASSWORD = 'Pa$$wo0rd'
 
 
 def get_user_path(uid):
@@ -30,7 +34,7 @@ def load(mock, parameters=None):
     parameters = parameters if parameters else {}
     mock.mock_users = {}
     mock.cached_users = []
-    mock.automatic_login_users = []
+    mock.automatic_login_users = set()
     mock.users_auto_uids = 2000
 
     mock.AddProperties(MAIN_IFACE, mock.GetAll(MAIN_IFACE))
@@ -47,15 +51,17 @@ def emit_properties_changed(mock, interface=MAIN_IFACE, properties=None):
 
     if isinstance(properties, (list, set)):
         properties = {p: mock.Get(interface, p) for p in properties}
-    elif isinstance(properties, dict):
-        pass
+    elif not isinstance(properties, dict):
+        raise TypeError('Unsupported properties type')
 
     mock.EmitSignal(dbus.PROPERTIES_IFACE, 'PropertiesChanged', 'sa{sv}as', (
         interface, properties, []))
 
 
-@dbus.service.method(MOCK_IFACE, in_signature='xsa{sv}', out_signature='o')
-def AddUser(self, uid, username, overrides=None):
+@dbus.service.method(MOCK_IFACE, in_signature='xssa{sv}a{sv}',
+                     out_signature='o')
+def AddUser(self, uid, username, password=DEFAULT_USER_PASSWORD,
+            overrides=None, password_policy_overrides=None):
     '''Add user via uid and username and optionally overriding properties
 
     Returns the new object path.
@@ -70,7 +76,7 @@ def AddUser(self, uid, username, overrides=None):
         'BackgroundFile': '',
         'Email': '{}@python-dbusmock.org'.format(username),
         'FormatsLocale': 'C',
-        'HomeDirectory': '/tmp/dbusmock-home/{}'.format(username),
+        'HomeDirectory': '/nonexisting/mock-home/{}'.format(username),
         'IconFile': '',
         'InputSources': dbus.Array([], signature='a{ss}'),
         'Language': 'C',
@@ -84,47 +90,30 @@ def AddUser(self, uid, username, overrides=None):
         'PasswordMode': 0,
         'Session': 'mock-session',
         'SessionType': 'wayland',
-        'Shell': '/bin/zsh',
+        'Shell': '/usr/bin/zsh',
         'SystemAccount': False,
         'XHasMessages': False,
         'XKeyboardLayouts': dbus.Array([], signature='s'),
         'XSession': 'mock-xsession',
     }
     default_props.update(overrides if overrides else {})
-    self.AddObject(path, USER_IFACE, default_props, [
-        ('SetRealName', 's', '', SetRealName),
-        ('SetEmail', 's', '', SetEmail),
-        ('SetLanguage', 's', '', SetLanguage),
-        ('SetXSession', 's', '', SetXSession),
-        ('SetSession', 's', '', SetSession),
-        ('SetSessionType', 's', '', SetSessionType),
-        ('SetLocation', 's', '', SetLocation),
-        ('SetHomeDirectory', 's', '', SetHomeDirectory),
-        ('SetShell', 's', '', SetShell),
-        ('SetIconFile', 's', '', SetIconFile),
-        ('SetLocked', 'b', '', SetLocked),
-        ('SetAccountType', 'i', '', SetAccountType),
-        ('SetPasswordMode', 'i', '', SetPasswordMode),
-        ('SetPasswordHint', 's', '', SetPasswordHint),
-        ('SetPassword', 'ss', '', SetPassword),
-        ('SetAutomaticLogin', 'b', '', SetAutomaticLogin),
-        ('GetPasswordExpirationPolicy', '',
-         'xxxxxx', GetPasswordExpirationPolicy),
-    ])
+    self.AddObject(path, USER_IFACE, default_props, [])
 
     had_users = len(self.mock_users) != 0
     had_multiple_users = len(self.mock_users) > 1
     user = mockobject.objects[path]
-    user.password = 'Pa$$wo0rd'
+    user.password = password
     user.properties = default_props
     user.pwd_expiration_policy = {
-        'expiration_time': 1000,
-        'last_change_time': 1615832413,
+        'expiration_time': sys.maxsize,
+        'last_change_time': int(time.time()),
         'min_days_between_changes': 0,
         'max_days_between_changes': 0,
         'days_to_warn': 0,
         'days_after_expiration_until_lock': 0,
     }
+    user.pwd_expiration_policy.update(
+        password_policy_overrides if password_policy_overrides else {})
     self.mock_users[uid] = default_props
 
     self.EmitSignal(MAIN_IFACE, 'UserAdded', 'o', [path])
@@ -147,8 +136,9 @@ def ListMockUsers(self):
 def AddAutoLoginUser(self, username):
     """ Enable autologin for an user """
     path = self.FindUserByName(username)
-    self.automatic_login_users.append(path)
-    mockobject.objects[path].SetAutomaticLogin(True)
+    self.automatic_login_users.add(path)
+    user = mockobject.objects[path]
+    set_user_property(user, 'AutomaticLogin', True)
     emit_properties_changed(self, MAIN_IFACE, 'AutomaticLoginUsers')
     return path
 
@@ -158,7 +148,8 @@ def RemoveAutoLoginUser(self, username):
     """ Disables autologin for an user """
     path = self.FindUserByName(username)
     self.automatic_login_users.remove(path)
-    mockobject.objects[path].SetAutomaticLogin(False)
+    user = mockobject.objects[path]
+    set_user_property(user, 'AutomaticLogin', False)
     emit_properties_changed(self, MAIN_IFACE, 'AutomaticLoginUsers')
     return path
 
@@ -179,7 +170,7 @@ def CreateUser(self, name, fullname, account_type):
 
     self.users_auto_uids += 1
 
-    return self.AddUser(self.users_auto_uids, name, {
+    return self.AddUser(self.users_auto_uids, name, DEFAULT_USER_PASSWORD, {
         'RealName': fullname, 'AccountType': account_type})
 
 
@@ -191,6 +182,7 @@ def DeleteUser(self, uid, _remove_files):
     had_multiple_users = len(self.mock_users) > 1
     self.RemoveObject(path)
     self.mock_users.pop(uid)
+    self.automatic_login_users.discard(path)
 
     self.EmitSignal(MAIN_IFACE, 'UserDeleted', 'o', [path])
 
@@ -367,7 +359,11 @@ def SetPassword(self, password, hint):
 
 @dbus.service.method(USER_IFACE, in_signature='b')
 def SetAutomaticLogin(self, automatic_login):
-    set_user_property(self, 'AutomaticLogin', automatic_login)
+    manager = mockobject.objects[MAIN_OBJ]
+    if automatic_login:
+        manager.AddAutoLoginUser(self.properties['UserName'])
+    else:
+        manager.RemoveAutoLoginUser(self.properties['UserName'])
 
 
 @dbus.service.method(MOCK_IFACE, in_signature='xxxxxxx')
