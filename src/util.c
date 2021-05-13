@@ -159,13 +159,8 @@ static void
 get_caller_loginuid (GDBusMethodInvocation *context, gchar *loginuid, gint size)
 {
         GPid pid;
-        gint uid;
         g_autofree gchar *path = NULL;
         g_autofree gchar *buf = NULL;
-
-        if (!get_caller_uid (context, &uid)) {
-                uid = getuid ();
-        }
 
         if (get_caller_pid (context, &pid)) {
                 path = g_strdup_printf ("/proc/%d/loginuid", (int) pid);
@@ -177,6 +172,11 @@ get_caller_loginuid (GDBusMethodInvocation *context, gchar *loginuid, gint size)
                 strncpy (loginuid, buf, size);
         }
         else {
+                gint uid;
+
+                if (!get_caller_uid (context, &uid)) {
+                        uid = getuid ();
+                }
                 g_snprintf (loginuid, size, "%d", uid);
         }
 }
