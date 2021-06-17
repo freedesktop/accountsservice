@@ -593,7 +593,6 @@ reload_autologin_timeout (Daemon *daemon)
 
         if (priv->autologin != NULL && priv->autologin != user) {
                 g_object_set (priv->autologin, "automatic-login", FALSE, NULL);
-                g_signal_emit_by_name (priv->autologin, "changed", 0);
                 g_clear_object (&priv->autologin);
         }
 
@@ -1594,13 +1593,11 @@ daemon_local_set_automatic_login (Daemon    *daemon,
 
         if (priv->autologin != NULL) {
                 g_object_set (priv->autologin, "automatic-login", FALSE, NULL);
-                g_signal_emit_by_name (priv->autologin, "changed", 0);
                 g_clear_object (&priv->autologin);
         }
 
         if (enabled) {
                 g_object_set (user, "automatic-login", TRUE, NULL);
-                g_signal_emit_by_name (user, "changed", 0);
                 g_object_ref (user);
                 priv->autologin = user;
         }
