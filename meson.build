@@ -146,7 +146,21 @@ gio_unix_dep = dependency('gio-unix-2.0')
 glib_dep = dependency('glib-2.0', version: '>= ' + glib_min_version)
 polkit_gobject_dep = dependency('polkit-gobject-1')
 
-crypt_dep = cc.find_library('crypt')
+# Using libxcrypt >= 4 we can be sure `crypt_gensalt (NULL, 0, NULL, 0)`
+# always returns a setting that is valid to use with `crypt (pw, setting)`.
+#
+# The setting returned will specify (depending on the system's
+# configuration of libxcrypt) in order of preferrence either
+# yescrypt "$y$", (gost-yescrypt "$gy$), bcrypt "$2b$" or sha512crypt "$6$"
+# as hash method, with a sufficient amount of cost or rounds and a random
+# salt drawn from secure system ressources with at least 128 bits.
+# (96 bits for sha512crypt, as more is not supported by this method, since
+# the effectively used maximum is 16 base64-encoded characters)
+crypt_dep = dependency('libxcrypt', required: false, version: '>= 4')
+config_h.set('HAVE_CRYPT_GENSALT', crypt_dep.found())
+if not crypt_dep.found()
+  crypt_dep = cc.find_library('crypt')
+endif
 
 dbus_dep = dependency('dbus-1')
 if dbus_dep.version().version_compare('>=1.9.18')
